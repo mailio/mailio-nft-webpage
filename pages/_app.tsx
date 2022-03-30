@@ -1,4 +1,4 @@
-import * as React from 'react';
+// import * as React from 'react';
 import type { AppProps } from 'next/app';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
@@ -16,11 +16,17 @@ import Router from 'next/router';
 import nProgress from 'nprogress';
 import { createTheme } from '../theme';
 import { walltConnectors } from '../utility/walletUtils';
+import { FC, useEffect } from 'react';
+import Head from 'next/head';
 
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache;
+type MyAppProps = AppProps & {
   Component: NextPage;
+  emotionCache: EmotionCache;
 }
+// interface MyAppProps extends AppProps & {
+//   emotionCache?: EmotionCache;
+//   Component: NextPage;
+// }
 
 Router.events.on('routeChangeStart', nProgress.start);
 Router.events.on('routeChangeError', nProgress.done);
@@ -28,7 +34,7 @@ Router.events.on('routeChangeComplete', nProgress.done);
 
 const clientSideEmotionCache = createEmotionCache();
 
-const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
+const MyApp: FC<MyAppProps> = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   // Use the layout defined at the page level, if available
@@ -36,30 +42,37 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
   const getLayout = Component.getLayout ?? ((page: React.ReactNode) => page)
 
 
-  React.useEffect(() => {
+  useEffect(() => {
   }, []);
 
   return (
     <CacheProvider value={emotionCache}>
+      <Head>
+        <meta
+          name="viewport"
+          content="initial-scale=1, width=device-width"
+        />
+      </Head>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <SettingsProvider>
-          <SettingsConsumer>
-            {({ settings }) => (
-              <ThemeProvider
-                theme={createTheme({
-                  responsiveFontSizes: settings.responsiveFontSizes,
-                  mode: settings.theme,
-                })}
-              >
-                <CssBaseline />
-                <Toaster position="top-center" />
-                <WagmiProvider autoConnect connectors={walltConnectors}>
+        <WagmiProvider autoConnect connectors={walltConnectors}>
+          <SettingsProvider>
+            <SettingsConsumer>
+              {({ settings }) => (
+                <ThemeProvider
+                  theme={createTheme({
+                    responsiveFontSizes: settings.responsiveFontSizes,
+                    mode: settings.theme,
+                  })}
+                >
+                  <CssBaseline />
+                  <Toaster position="top-center" />
+
                   {getLayout(<Component {...pageProps} />)}
-                </WagmiProvider>
-              </ThemeProvider>
-            )}
-          </SettingsConsumer>
-        </SettingsProvider>
+                </ThemeProvider>
+              )}
+            </SettingsConsumer>
+          </SettingsProvider>
+        </WagmiProvider>
       </LocalizationProvider>
     </CacheProvider>
   );

@@ -64,3 +64,10 @@ export const displayWalletConnectors: WalletDisplay[] = [
 export const shortenWalletAddress = (address: string, length: number = 6) => {
     return address.slice(0, length) + '...' + address.slice(address.length - length);
 };
+
+export const shortenHash = (hash: string, length: number = 6) => {
+    if (hash && hash.length > length) {
+        return hash.slice(0, length) + '...';
+    }
+    return hash;
+};

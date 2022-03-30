@@ -17,6 +17,7 @@
     "@mui/icons-material": "^5.4.4",
     "@mui/lab": "^5.0.0-alpha.71",
     "@mui/material": "^5.4.4",
+    "axios": "^0.26.1",
     "date-fns": "^2.28.0",
     "ethers": "^5.6.1",
     "next": "12.1.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "17.0.21",
+    "@types/nprogress": "^0.2.0",
     "@types/react": "17.0.39",
     "eslint": "8.10.0",
     "eslint-config-next": "12.1.0",

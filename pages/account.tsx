@@ -4,16 +4,16 @@ import Head from "next/head";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { AccountCoins } from "../components/account/account-coins";
-import { AccountNFTs } from "../components/account/account-nfts";
+import { AccountTransactions } from "../components/account/account-transactions";
 import { MainLayout } from "../components/main-layout";
 
 const tabs = [
+    { label: 'Transactions', value: 'transactions' },
     { label: 'Coins', value: 'coins' },
-    { label: 'NFTs', value: 'nfts' },
 ];
 
 const Account: NextPage = () => {
-    const [currentTab, setCurrentTab] = useState<string>('coins');
+    const [currentTab, setCurrentTab] = useState<string>('transactions');
     const [{ data, error, loading }] = useAccount({
         fetchEns: false,
     });
@@ -24,10 +24,9 @@ const Account: NextPage = () => {
 
     useEffect(() => {
         if (data?.address && accountData.address !== data.address) {
-            console.log('account data changes: ', data.address);
             setAccountData(data);
         }
-    }, [data]);
+    }, [data, accountData?.address]);
 
     return (
         <>
@@ -41,6 +40,7 @@ const Account: NextPage = () => {
                 sx={{
                     flexGrow: 1,
                     py: 8,
+                    minHeight: '100vh',
                 }}
             >
                 <Container maxWidth="md">
@@ -78,7 +78,7 @@ const Account: NextPage = () => {
                     </Tabs>
                     <Divider sx={{ mb: 3 }} />
                     {currentTab === 'coins' && <AccountCoins accountData={accountData} />}
-                    {currentTab === 'nfts' && <AccountNFTs />}
+                    {currentTab === 'transactions' && <AccountTransactions />}
                 </Container>
             </Box>
         </>

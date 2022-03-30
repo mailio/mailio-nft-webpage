@@ -1,13 +1,11 @@
 import { AppBar, Box, Button, Container, IconButton, Toolbar, Link, Avatar, ButtonBase } from '@mui/material';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import NextLink from 'next/link';
 import { Logo } from './logo';
-import { AccessAlarm } from '@mui/icons-material';
 import WalletConnectDialog from './dialogs/wallet-connect-dialog';
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { AccountPopover } from './account-popover';
-import { User } from '../icons/user';
-import { UserBig } from '../icons/user-big';
+import { Menu } from '@mui/icons-material';
 
 interface MainNavbarProps {
     onOpenSidebar?: () => void;
@@ -103,7 +101,7 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                         >
                             <Box
                                 sx={{
-                                    marginTop: 1,
+                                    marginTop: 2,
                                 }}
                             >
                                 <a>
@@ -130,7 +128,7 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                 }
                             }}
                         >
-                            <AccessAlarm fontSize="small" />
+                            <Menu fontSize="small" />
                         </IconButton>
                         <Box
                             sx={{

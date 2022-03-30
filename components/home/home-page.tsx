@@ -18,6 +18,7 @@ import { Inbox } from '../../icons/inbox';
 import { Drafts } from '../../icons/drafts';
 import Link from 'next/link';
 import { CardsExample } from '../widgets/cards';
+import Image from 'next/image';
 
 export const HomePage: FC = (props) => {
     const theme = useTheme();
@@ -412,7 +413,10 @@ export const HomePage: FC = (props) => {
                         </Grid>
                     </Box>
                     <Box>
-                        <Link href="https://fonts.google.com/icons">
+                        <Link
+                            href="https://fonts.google.com/icons"
+                            passHref={true}
+                        >
                             <Typography
                                 color='secondary'
                                 variant='subtitle1'
@@ -463,7 +467,12 @@ export const HomePage: FC = (props) => {
                                 md={4}
                                 textAlign="center"
                             >
-                                <img src="/images/img-handshake.svg" />
+                                <Image
+                                    src="/images/img-handshake.svg"
+                                    alt="handshake"
+                                    width={220}
+                                    height={220}
+                                />
                             </Grid>
                             <Grid
                                 item
@@ -471,7 +480,12 @@ export const HomePage: FC = (props) => {
                                 md={4}
                                 textAlign="center"
                             >
-                                <img src="/images/img-inbox.svg" />
+                                <Image
+                                    src="/images/img-inbox.svg"
+                                    alt="inbox"
+                                    width={220}
+                                    height={220}
+                                />
                             </Grid>
                             <Grid
                                 item
@@ -479,7 +493,12 @@ export const HomePage: FC = (props) => {
                                 md={4}
                                 textAlign="center"
                             >
-                                <img src="/images/img-trust.svg" />
+                                <Image
+                                    src="/images/img-trust.svg"
+                                    alt="trust"
+                                    width={220}
+                                    height={220}
+                                />
                             </Grid>
                         </Grid>
                         <Grid

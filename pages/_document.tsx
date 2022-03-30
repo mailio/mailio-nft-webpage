@@ -17,14 +17,14 @@ export default class MyDocument extends Document {
                         rel="preconnect"
                         href="https://fonts.gstatic.com"
                     />
-                    <link
+                    {/* <link
                         rel="stylesheet"
                         href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
                     />
                     <link
                         rel="stylesheet"
                         href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700&display=optional"
-                    />
+                    /> */}
                     <link
                         rel="apple-touch-icon"
                         sizes="180x180"

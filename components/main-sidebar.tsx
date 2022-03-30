@@ -1,7 +1,9 @@
 import { Box, Drawer, Link, styled, Theme, useMediaQuery, Button } from '@mui/material';
 import { useRouter } from 'next/router';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import NextLink from 'next/link';
+import WalletConnectDialog from './dialogs/wallet-connect-dialog';
+import { useAccount } from 'wagmi';
 
 interface MainSidebarProps {
     onClose: () => void;
@@ -31,6 +33,22 @@ export const MainSidebar: FC<MainSidebarProps> = (props) => {
         }
     };
 
+    const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
+
+    const handleConnectWalletClick = () => {
+        setWalletModalOpen(true);
+    };
+
+    const [{ data: accountData }, disconnect] = useAccount({
+        fetchEns: false,
+    })
+
+    const handleDisconnect = (): void => {
+        onClose?.();
+        disconnect();
+        router.push('/');
+    };
+
     useEffect(
         handlePathChange,
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,6 +57,11 @@ export const MainSidebar: FC<MainSidebarProps> = (props) => {
 
     return (
         <>
+            <WalletConnectDialog
+                open={walletModalOpen}
+                onClose={() => setWalletModalOpen(false)}
+                onConnect={() => console.log('connected')}
+            />
             <Drawer
                 anchor="right"
                 onClose={onClose}
@@ -51,7 +74,7 @@ export const MainSidebar: FC<MainSidebarProps> = (props) => {
             >
                 <Box sx={{ p: 2 }}>
                     <NextLink
-                        href="/dashboard"
+                        href="/"
                         passHref
                     >
                         <MainSidebarLink
@@ -59,43 +82,43 @@ export const MainSidebar: FC<MainSidebarProps> = (props) => {
                             underline="none"
                             variant="subtitle2"
                         >
-                            Live Demo
+                            Home
                         </MainSidebarLink>
                     </NextLink>
-                    <NextLink
-                        href="/browse"
-                        passHref
-                    >
-                        <MainSidebarLink
-                            color="textSecondary"
-                            underline="none"
-                            variant="subtitle2"
+                    {accountData ? (
+                        <>
+                            <NextLink
+                                href="/account"
+                                passHref
+                            >
+                                <MainSidebarLink
+                                    color="textSecondary"
+                                    underline="none"
+                                    variant="subtitle2"
+                                >
+                                    My Account
+                                </MainSidebarLink>
+                            </NextLink>
+                            <Button
+                                fullWidth
+                                sx={{ mt: 1.5 }}
+                                variant="contained"
+                                onClick={handleDisconnect}
+                            >
+                                Disconnect
+                            </Button>
+                        </>
+                    ) : (
+                        <Button
+                            fullWidth
+                            onClick={handleConnectWalletClick}
+                            size="medium"
+                            sx={{ mt: 1.5 }}
+                            variant="contained"
                         >
-                            Components
-                        </MainSidebarLink>
-                    </NextLink>
-                    <NextLink
-                        href="/docs/welcome"
-                        passHref
-                    >
-                        <MainSidebarLink
-                            color="textSecondary"
-                            underline="none"
-                            variant="subtitle2"
-                        >
-                            Documentation
-                        </MainSidebarLink>
-                    </NextLink>
-                    <Button
-                        component="a"
-                        fullWidth
-                        href="https://material-ui.com/store/items/devias-kit-pro"
-                        sx={{ mt: 1.5 }}
-                        target="_blank"
-                        variant="contained"
-                    >
-                        Buy Now
-                    </Button>
+                            Connect Wallet
+                        </Button>
+                    )}
                 </Box>
             </Drawer>
         </>

@@ -70,7 +70,7 @@ const WalletConnectDialog: FC<WalletConnectDialogProps> = (props) => {
                             pb: 4,
                         }}
                     >
-                        Select a wallet to connect you'd like to connect with
+                        Select a wallet to connect you&apos;d like to connect with
                     </Typography>
                     <Box>
                         <FormControlLabel
@@ -150,12 +150,13 @@ const WalletConnectDialog: FC<WalletConnectDialogProps> = (props) => {
                                             spacing={1}
                                         >
                                             {walletDisplay?.image && (
+                                                // eslint-disable-next-line @next/next/no-img-element
                                                 <img
+                                                    src={walletDisplay.image}
+                                                    alt="Wallet Logo"
                                                     style={{
                                                         filter: tosPolicy ? 'grayscale(0%)' : 'grayscale(100%)',
                                                     }}
-                                                    src={walletDisplay.image}
-                                                    alt={connector.name}
                                                     width={45}
                                                 />
                                             )}

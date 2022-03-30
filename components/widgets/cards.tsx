@@ -220,7 +220,10 @@ export const CardsExample: FC = () => {
                                 textAlign: 'right',
                             }}
                         >
-                            <Link href="https://knownorigin.io/tokens/119203">
+                            <Link
+                                href="https://knownorigin.io/tokens/119203"
+                                passHref={true}
+                            >
                                 <Button
                                     endIcon={<NavigateNext fontSize="small" />}
                                     color="secondary"
