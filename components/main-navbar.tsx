@@ -3,7 +3,6 @@ import { FC, useEffect, useRef, useState } from 'react';
 import NextLink from 'next/link';
 import { Logo } from './logo';
 import WalletConnectDialog from './dialogs/wallet-connect-dialog';
-// import { useAccount } from 'wagmi';
 import { Menu } from '@mui/icons-material';
 import { AccountPopover } from './account/account-popover';
 import { useSelector } from '../store';
