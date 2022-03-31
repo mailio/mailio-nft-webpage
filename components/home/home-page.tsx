@@ -19,9 +19,17 @@ import { Drafts } from '../../icons/drafts';
 import Link from 'next/link';
 import { CardsExample } from '../widgets/cards';
 import Image from 'next/image';
+import { useAccount } from 'wagmi';
 
 export const HomePage: FC = (props) => {
     const theme = useTheme();
+
+    const [{ data: accountData }, disconnect] = useAccount({
+        fetchEns: true,
+    })
+
+
+    console.log("main use account: ", accountData);
 
     return (
         <>
