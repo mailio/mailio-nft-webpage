@@ -12,12 +12,12 @@ const MATIC: AddEthereumChainParameter['nativeCurrency'] = {
     decimals: 18,
 }
 
-interface BasicChainInformation {
+export interface BasicChainInformation {
     urls: string[]
     name: string
 }
 
-interface ExtendedChainInformation extends BasicChainInformation {
+export interface ExtendedChainInformation extends BasicChainInformation {
     nativeCurrency: AddEthereumChainParameter['nativeCurrency']
     blockExplorerUrls: AddEthereumChainParameter['blockExplorerUrls']
 }

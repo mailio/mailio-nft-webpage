@@ -2,15 +2,15 @@ import { FC, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { upsertWallet, MyWallet } from "../../../store/wallet-store";
 import { getWeb3ConnectorName } from "../../../utility/walletUtils";
-import { hooks, metaMask } from "../../web3/connectors/metamask";
+import { hooks, walletConnect } from "../../web3/connectors/wallet-connect";
 import { ConnectCardButton } from "./connect-button";
 
-interface MetaMaskConnectCardProps {
+interface WalletConnectCardProps {
     onClose: () => void;
     tosPolicy: boolean,
 }
 
-export const MetaMaskConnectCard: FC<MetaMaskConnectCardProps> = (props) => {
+export const WalletConnectCard: FC<WalletConnectCardProps> = (props) => {
 
     const { tosPolicy, onClose } = props;
 
@@ -34,7 +34,7 @@ export const MetaMaskConnectCard: FC<MetaMaskConnectCardProps> = (props) => {
                 address: accounts[0],
                 isActive: isActive,
                 ensNames: ENSNames,
-                walletName: getWeb3ConnectorName(metaMask),
+                walletName: getWeb3ConnectorName(walletConnect),
                 provider: provider,
             };
             dispatch(upsertWallet(wallet, provider));
@@ -46,7 +46,7 @@ export const MetaMaskConnectCard: FC<MetaMaskConnectCardProps> = (props) => {
         <>
             <ConnectCardButton
                 chainId={chainId}
-                connector={metaMask}
+                connector={walletConnect}
                 error={error}
                 isActivating={isActivating}
                 isActive={isActive}

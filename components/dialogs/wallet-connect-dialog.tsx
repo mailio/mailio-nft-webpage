@@ -1,7 +1,9 @@
 import { HighlightOff } from '@mui/icons-material';
 import { Box, Grid, Modal, Typography, Stack, FormControlLabel, Link, IconButton, Checkbox } from '@mui/material';
 import { FC, useState } from 'react';
-import { MetaMaskConnect } from '../account/connect/metamask-card';
+import { CoinbaseConnectCard } from '../account/connect/coinbase-card';
+import { MetaMaskConnectCard } from '../account/connect/metamask-card';
+import { WalletConnectCard } from '../account/connect/walletconnect-card';
 
 interface WalletConnectDialogProps {
     open: boolean;
@@ -108,7 +110,8 @@ const WalletConnectDialog: FC<WalletConnectDialogProps> = (props) => {
                     <Grid
                         container
                         flexDirection={{ sx: 'column', md: 'row' }}
-                        spacing={1}
+                        spacing={2}
+                        flexWrap="wrap"
                     >
                         {/* {data.connectors.map((connector: Connector<any, any>) => {
                         const walletDisplay: WalletDisplay | undefined = displayWalletConnectors.find((displayConnector) => displayConnector.name === connector.name);
@@ -180,7 +183,35 @@ const WalletConnectDialog: FC<WalletConnectDialogProps> = (props) => {
                             sm={12}
                             md={4}
                         >
-                            <MetaMaskConnect
+                            <MetaMaskConnectCard
+                                tosPolicy={tosPolicy}
+                                onClose={onClose}
+                            />
+                        </Grid>
+                        <Grid
+                            item
+                            sx={{
+                                pr: 2,
+                            }}
+                            xs={12}
+                            sm={12}
+                            md={4}
+                        >
+                            <CoinbaseConnectCard
+                                tosPolicy={tosPolicy}
+                                onClose={onClose}
+                            />
+                        </Grid>
+                        <Grid
+                            item
+                            sx={{
+                                pr: 2,
+                            }}
+                            xs={12}
+                            sm={12}
+                            md={4}
+                        >
+                            <WalletConnectCard
                                 tosPolicy={tosPolicy}
                                 onClose={onClose}
                             />

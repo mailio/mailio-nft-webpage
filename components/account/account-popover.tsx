@@ -1,15 +1,14 @@
 import { Avatar, Box, Divider, Popover, Typography, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import NextLink from 'next/link';
-import { AccountCircle, Logout, SupervisedUserCircle } from "@mui/icons-material";
-import { shortenWalletAddress } from "../../utility/walletUtils";
+import { AccountCircle, Logout } from "@mui/icons-material";
+import { shortenWalletAddress, walletNameToConnector } from "../../utility/walletUtils";
 import { useRouter } from "next/router";
 import { User } from "../../icons/user";
-import { disconnectWallets, MyWallet, WalletStore } from "../../store/wallet-store";
+import { cleanWalletCache, MyWallet, WalletStore } from "../../store/wallet-store";
 import { useDispatch, useSelector } from "../../store";
 import { getFirstActiveWallet } from "../../store/store-getters";
 import { disconnectWallet } from "../web3/connect";
-import { metaMask } from "../web3/connectors/metamask";
 
 interface AccountPopoverProps {
     anchorEl: null | Element;
@@ -19,19 +18,30 @@ interface AccountPopoverProps {
 
 export const AccountPopover: FC<AccountPopoverProps> = (props) => {
     const { anchorEl, onClose, open, ...other } = props;
-    const [avatar, setAvatar] = useState<string>('');
-    const [name, setName] = useState<string>('');
     const router = useRouter();
 
-    const dispatch = useDispatch();
+    const walletStore: WalletStore = useSelector((state) => state.wallet)
+    const dispatch = useDispatch();;
 
-    const walletStore: WalletStore = useSelector((state) => state.wallet);
     const [wallet, setWallet] = useState<MyWallet>();
 
+    // handle wallet disconnect
     const handleDisconnect = (): void => {
+
+        const activeWallet = getFirstActiveWallet(walletStore);
+
+        // get active wallet to disconnect from
+        if (activeWallet) {
+            const conn = walletNameToConnector(activeWallet.walletName);
+            if (conn != null) {
+                disconnectWallet(conn);
+            }
+        }
+
+        //@ts-ignore
+        dispatch(cleanWalletCache());
+
         onClose?.();
-        disconnectWallet(metaMask);
-        dispatch(disconnectWallets());
         router.push('/');
     };
 
@@ -45,7 +55,6 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
     }, [walletStore]);
 
     useEffect(() => {
-        setAvatar('/images/icn-user.svg');
     }, []);
 
     return (
@@ -68,11 +77,11 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
                 }}
             >
                 <Avatar
-                    src={avatar}
+                    src={wallet?.avatar}
                     sx={{
                         height: 40,
                         width: 40,
-                        pt: avatar === '/images/icn-user.svg' ? 0.5 : 0,
+                        pt: wallet?.avatar === '/images/icn-user.svg' ? 0.5 : 0,
                     }}
                 >
                     <User fontSize="small" />

@@ -10,14 +10,6 @@ import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../connectors/coin
 import { hooks as networkHooks, network } from '../connectors/network';
 import { FC } from 'react';
 
-const getName = (connector: Connector): string => {
-    if (connector instanceof MetaMask) return 'MetaMask'
-    if (connector instanceof WalletConnect) return 'WalletConnect'
-    if (connector instanceof CoinbaseWallet) return 'Coinbase Wallet'
-    if (connector instanceof Network) return 'Network'
-    return 'Unknown'
-};
-
 const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3ReactHooks][] = [
     [metaMask, metaMaskHooks],
     [walletConnect, walletConnectHooks],
@@ -26,7 +18,7 @@ const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3Reac
 ];
 
 function Child() {
-    const { connector } = useWeb3React()
+    useWeb3React();
     return null;
 }
 
