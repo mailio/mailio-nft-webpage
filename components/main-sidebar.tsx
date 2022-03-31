@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import WalletConnectDialog from './dialogs/wallet-connect-dialog';
-import { useAccount } from 'wagmi';
+// import { useAccount } from 'wagmi';
 
 interface MainSidebarProps {
     onClose: () => void;
@@ -39,13 +39,13 @@ export const MainSidebar: FC<MainSidebarProps> = (props) => {
         setWalletModalOpen(true);
     };
 
-    const [{ data: accountData }, disconnect] = useAccount({
-        fetchEns: false,
-    })
+    // const [{ data: accountData }, disconnect] = useAccount({
+    //     fetchEns: false,
+    // })
 
     const handleDisconnect = (): void => {
         onClose?.();
-        disconnect();
+        // disconnect();
         router.push('/');
     };
 
@@ -85,7 +85,7 @@ export const MainSidebar: FC<MainSidebarProps> = (props) => {
                             Home
                         </MainSidebarLink>
                     </NextLink>
-                    {accountData ? (
+                    {/* {accountData ? (
                         <>
                             <NextLink
                                 href="/account"
@@ -118,7 +118,7 @@ export const MainSidebar: FC<MainSidebarProps> = (props) => {
                         >
                             Connect Wallet
                         </Button>
-                    )}
+                    )} */}
                 </Box>
             </Drawer>
         </>

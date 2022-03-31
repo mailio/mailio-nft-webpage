@@ -1,7 +1,6 @@
 import { Box, Card, CardContent, CircularProgress, Grid, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useBalance, useProvider } from 'wagmi';
 
 interface AccountCoinsProps {
     accountData: any,

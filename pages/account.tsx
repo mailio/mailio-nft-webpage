@@ -2,7 +2,7 @@ import { Box, Container, Divider, Tab, Tabs, Typography } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+// import { useAccount } from "wagmi";
 import { AccountCoins } from "../components/account/account-coins";
 import { AccountTransactions } from "../components/account/account-transactions";
 import { MainLayout } from "../components/main-layout";
@@ -14,19 +14,20 @@ const tabs = [
 
 const Account: NextPage = () => {
     const [currentTab, setCurrentTab] = useState<string>('transactions');
-    const [{ data, error, loading }] = useAccount({
-        fetchEns: false,
-    });
+    // const [{ data, error, loading }] = useAccount({
+    //     fetchEns: false,
+    // });
 
-    const [accountData, setAccountData] = useState<any>({
-        address: '',
-    });
+    // const [accountData, setAccountData] = useState<any>({
+    //     address: '',
+    // });
 
-    useEffect(() => {
-        if (data?.address && accountData.address !== data.address) {
-            setAccountData(data);
-        }
-    }, [data, accountData?.address]);
+    // useEffect(() => {
+    //     if (data?.address && accountData.address !== data.address) {
+    //         setAccountData(data);
+    //     }
+    // }, [data, accountData?.address]);
+    const accountData = undefined;
 
     return (
         <>
@@ -51,12 +52,12 @@ const Account: NextPage = () => {
                         variant="body1"
                         color="textSecondary"
                     >
-                        {data?.ens?.name}
+                        {/* {data?.ens?.name} */}
                     </Typography>
                     <Typography
                         variant="subtitle1"
                     >
-                        Address: {data?.address}
+                        {/* Address: {data?.address} */}
                     </Typography>
                     <Tabs
                         indicatorColor="primary"

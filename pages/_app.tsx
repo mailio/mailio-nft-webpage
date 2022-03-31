@@ -7,7 +7,6 @@ import { Toaster } from 'react-hot-toast';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { SettingsConsumer, SettingsProvider } from '../contexts/settings-context';
 import '../theme/fonts/fonts.css';
-import { Provider as WagmiProvider } from "wagmi";
 
 
 import createEmotionCache from '../utility/createEmotionCache';
@@ -15,9 +14,10 @@ import { NextPage } from 'next';
 import Router from 'next/router';
 import nProgress from 'nprogress';
 import { createTheme } from '../theme';
-import { walltConnectors } from '../utility/walletUtils';
 import { FC, useEffect } from 'react';
 import Head from 'next/head';
+import { Provider as ReduxProvider } from 'react-redux';
+import { store } from '../store';
 
 type MyAppProps = AppProps & {
   Component: NextPage;
@@ -53,8 +53,8 @@ const MyApp: FC<MyAppProps> = (props) => {
           content="initial-scale=1, width=device-width"
         />
       </Head>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <WagmiProvider autoConnect connectors={walltConnectors}>
+      <ReduxProvider store={store}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <SettingsProvider>
             <SettingsConsumer>
               {({ settings }) => (
@@ -72,8 +72,8 @@ const MyApp: FC<MyAppProps> = (props) => {
               )}
             </SettingsConsumer>
           </SettingsProvider>
-        </WagmiProvider>
-      </LocalizationProvider>
+        </LocalizationProvider>
+      </ReduxProvider>
     </CacheProvider>
   );
 };

@@ -1,18 +1,21 @@
 import { AppBar, Box, Button, Container, IconButton, Toolbar, Link, Avatar, ButtonBase } from '@mui/material';
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import NextLink from 'next/link';
 import { Logo } from './logo';
 import WalletConnectDialog from './dialogs/wallet-connect-dialog';
-import { useAccount } from 'wagmi';
-import { AccountPopover } from './account-popover';
+// import { useAccount } from 'wagmi';
 import { Menu } from '@mui/icons-material';
+import { AccountPopover } from './account/account-popover';
+import { useSelector } from '../store';
+import { getFirstActiveWallet } from '../store/store-getters';
+import { MyWallet, WalletStore } from '../store/wallet-store';
 
 interface MainNavbarProps {
     onOpenSidebar?: () => void;
 }
 
 interface AccountButtonProps {
-    accountData: any;
+    accountData: MyWallet;
 }
 
 const AccountButton = (props: AccountButtonProps) => {
@@ -20,9 +23,11 @@ const AccountButton = (props: AccountButtonProps) => {
     const anchorRef = useRef<HTMLButtonElement | null>(null);
     const [openPopover, setOpenPopover] = useState<boolean>(false);
 
+
     const user = {
-        avatar: accountData.ens?.avatar ? accountData.ens.avatar : '/images/icn-user.svg',
-        name: accountData.ens?.name,
+        // avatar: accountData.ens?.avatar ? accountData.ens.avatar : '/images/icn-user.svg'
+        avatar: '/images/icn-user.svg',
+        name: (accountData.ensNames && accountData.ensNames?.length > 0) ? accountData.ensNames[0] : accountData.address,
     };
 
     const handleOpenPopover = (): void => {
@@ -68,13 +73,23 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
     const anchorRef = useRef<HTMLButtonElement | null>(null);
 
     const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
+    const [activeWallet, setActiveWallet] = useState<MyWallet>();
+
+    const walletStore: WalletStore = useSelector((state) => state.wallet);
 
     const handleConnectWalletClick = () => {
         setWalletModalOpen(true);
     };
-    const [{ data: accountData }] = useAccount({
-        fetchEns: true,
-    });
+
+    useEffect(() => {
+        if (walletStore.wallets.length > 0) {
+            // find active wallet
+            const aw = getFirstActiveWallet(walletStore);
+            if (aw) {
+                setActiveWallet(aw);
+            }
+        }
+    }, [walletStore]);
 
     return (
         <>
@@ -178,9 +193,9 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                     Example Link 3
                                 </Link>
                             </NextLink>
-                            {accountData ? (
+                            {activeWallet ? (
                                 <AccountButton
-                                    accountData={accountData}
+                                    accountData={activeWallet}
                                 />
                             ) : (
                                 <Button

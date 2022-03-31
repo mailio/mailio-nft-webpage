@@ -1,11 +1,15 @@
 import { Avatar, Box, Divider, Popover, Typography, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import { User } from "../icons/user";
 import NextLink from 'next/link';
-import { useAccount } from 'wagmi';
 import { AccountCircle, Logout, SupervisedUserCircle } from "@mui/icons-material";
-import { shortenWalletAddress } from "../utility/walletUtils";
+import { shortenWalletAddress } from "../../utility/walletUtils";
 import { useRouter } from "next/router";
+import { User } from "../../icons/user";
+import { disconnectWallets, MyWallet, WalletStore } from "../../store/wallet-store";
+import { useDispatch, useSelector } from "../../store";
+import { getFirstActiveWallet } from "../../store/store-getters";
+import { disconnectWallet } from "../web3/connect";
+import { metaMask } from "../web3/connectors/metamask";
 
 interface AccountPopoverProps {
     anchorEl: null | Element;
@@ -19,26 +23,26 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
     const [name, setName] = useState<string>('');
     const router = useRouter();
 
-    const [{ data: accountData }, disconnect] = useAccount({
-        fetchEns: true,
-    })
+    const dispatch = useDispatch();
+
+    const walletStore: WalletStore = useSelector((state) => state.wallet);
+    const [wallet, setWallet] = useState<MyWallet>();
 
     const handleDisconnect = (): void => {
         onClose?.();
-        disconnect();
+        disconnectWallet(metaMask);
+        dispatch(disconnectWallets());
         router.push('/');
     };
 
     useEffect(() => {
-        if (accountData) {
-            if (accountData.ens?.avatar) {
-                setAvatar(accountData.ens.avatar);
-            }
-            if (accountData.ens?.name) {
-                setName(accountData.ens.name);
+        if (walletStore.wallets.length > 0) {
+            const aw = getFirstActiveWallet(walletStore);
+            if (aw) {
+                setWallet(aw);
             }
         }
-    }, [accountData]);
+    }, [walletStore]);
 
     useEffect(() => {
         setAvatar('/images/icn-user.svg');
@@ -79,13 +83,13 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
                     }}
                 >
                     <Typography variant="subtitle1">
-                        {name}
+                        {wallet?.name}
                     </Typography>
                     <Typography
                         color="textSecondary"
                         variant="subtitle2"
                     >
-                        {accountData?.address ? shortenWalletAddress(accountData.address) : ''}
+                        {wallet?.address ? shortenWalletAddress(wallet.address) : ''}
                     </Typography>
                 </Box>
             </Box>
