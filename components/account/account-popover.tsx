@@ -1,11 +1,14 @@
 import { Avatar, Box, Divider, Popover, Typography, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import { User } from "../icons/user";
 import NextLink from 'next/link';
-import { useAccount } from 'wagmi';
-import { AccountCircle, Logout, SupervisedUserCircle } from "@mui/icons-material";
-import { shortenWalletAddress } from "../utility/walletUtils";
+import { AccountCircle, Logout } from "@mui/icons-material";
+import { shortenWalletAddress, walletNameToConnector } from "../../utility/walletUtils";
 import { useRouter } from "next/router";
+import { User } from "../../icons/user";
+import { cleanWalletCache, MyWallet, WalletStore } from "../../store/wallet-store";
+import { useDispatch, useSelector } from "../../store";
+import { getFirstActiveWallet } from "../../store/store-getters";
+import { disconnectWallet } from "../web3/connect";
 
 interface AccountPopoverProps {
     anchorEl: null | Element;
@@ -15,33 +18,43 @@ interface AccountPopoverProps {
 
 export const AccountPopover: FC<AccountPopoverProps> = (props) => {
     const { anchorEl, onClose, open, ...other } = props;
-    const [avatar, setAvatar] = useState<string>('');
-    const [name, setName] = useState<string>('');
     const router = useRouter();
 
-    const [{ data: accountData }, disconnect] = useAccount({
-        fetchEns: true,
-    })
+    const walletStore: WalletStore = useSelector((state) => state.wallet)
+    const dispatch = useDispatch();;
 
+    const [wallet, setWallet] = useState<MyWallet>();
+
+    // handle wallet disconnect
     const handleDisconnect = (): void => {
+
+        const activeWallet = getFirstActiveWallet(walletStore);
+
+        // get active wallet to disconnect from
+        if (activeWallet) {
+            const conn = walletNameToConnector(activeWallet.walletName);
+            if (conn != null) {
+                disconnectWallet(conn);
+            }
+        }
+
+        //@ts-ignore
+        dispatch(cleanWalletCache());
+
         onClose?.();
-        disconnect();
         router.push('/');
     };
 
     useEffect(() => {
-        if (accountData) {
-            if (accountData.ens?.avatar) {
-                setAvatar(accountData.ens.avatar);
-            }
-            if (accountData.ens?.name) {
-                setName(accountData.ens.name);
+        if (walletStore.wallets.length > 0) {
+            const aw = getFirstActiveWallet(walletStore);
+            if (aw) {
+                setWallet(aw);
             }
         }
-    }, [accountData]);
+    }, [walletStore]);
 
     useEffect(() => {
-        setAvatar('/images/icn-user.svg');
     }, []);
 
     return (
@@ -64,11 +77,11 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
                 }}
             >
                 <Avatar
-                    src={avatar}
+                    src={wallet?.avatar}
                     sx={{
                         height: 40,
                         width: 40,
-                        pt: avatar === '/images/icn-user.svg' ? 0.5 : 0,
+                        pt: wallet?.avatar === '/images/icn-user.svg' ? 0.5 : 0,
                     }}
                 >
                     <User fontSize="small" />
@@ -79,13 +92,13 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
                     }}
                 >
                     <Typography variant="subtitle1">
-                        {name}
+                        {wallet?.name}
                     </Typography>
                     <Typography
                         color="textSecondary"
                         variant="subtitle2"
                     >
-                        {accountData?.address ? shortenWalletAddress(accountData.address) : ''}
+                        {wallet?.address ? shortenWalletAddress(wallet.address) : ''}
                     </Typography>
                 </Box>
             </Box>

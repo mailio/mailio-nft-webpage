@@ -1,32 +1,67 @@
+import { Network } from "@ethersproject/networks";
 import { Box, Container, Divider, Tab, Tabs, Typography } from "@mui/material";
+import { Web3ReactHooks } from "@web3-react/core";
+import { BigNumber } from "ethers";
+import { formatEther } from "ethers/lib/utils";
 import { NextPage } from "next";
 import Head from "next/head";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
-import { AccountCoins } from "../components/account/account-coins";
+import toast from "react-hot-toast";
 import { AccountTransactions } from "../components/account/account-transactions";
 import { MainLayout } from "../components/main-layout";
+import { BasicChainInformation, CHAINS, ExtendedChainInformation } from "../components/web3/chains";
+import { NETWORK_COIN_SYMBOL } from "../config";
+import { useSelector } from "../store";
+import { getFirstActiveWallet } from "../store/store-getters";
+import { MyWallet, WalletStore } from "../store/wallet-store";
 
 const tabs = [
     { label: 'Transactions', value: 'transactions' },
-    { label: 'Coins', value: 'coins' },
 ];
 
 const Account: NextPage = () => {
     const [currentTab, setCurrentTab] = useState<string>('transactions');
-    const [{ data, error, loading }] = useAccount({
-        fetchEns: false,
-    });
 
-    const [accountData, setAccountData] = useState<any>({
-        address: '',
-    });
+    const walletStore: WalletStore = useSelector((state) => state.wallet);
+
+    const [wallet, setWallet] = useState<MyWallet>();
+    const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
+    const [chain, setChain] = useState<ExtendedChainInformation | BasicChainInformation>();
+
+    const getBalance = async (provider: ReturnType<Web3ReactHooks['useProvider']>, address: string): Promise<BigNumber> => {
+        if (provider && address) {
+            return provider.getBalance(address);
+        }
+        return BigNumber.from(0);
+    };
+
+    const getNetwork = async (provider: ReturnType<Web3ReactHooks['useProvider']>): Promise<Network | null> => {
+        if (provider) {
+            return provider.getNetwork();
+        }
+        return null;
+    };
 
     useEffect(() => {
-        if (data?.address && accountData.address !== data.address) {
-            setAccountData(data);
+        const activeWallet = getFirstActiveWallet(walletStore);
+        if (activeWallet) {
+            setWallet(activeWallet);
+            getBalance(activeWallet.provider, activeWallet.address).then((balance) => {
+                setBalance(balance);
+            }).catch((e) => {
+                console.error(e);
+                toast.error(e.message);
+            });
+
+            getNetwork(activeWallet.provider).then((network) => {
+                if (network) {
+                    const chainId = network.chainId;
+                    const chain = CHAINS[chainId];
+                    setChain(chain);
+                }
+            });
         }
-    }, [data, accountData?.address]);
+    }, [walletStore]);
 
     return (
         <>
@@ -51,12 +86,25 @@ const Account: NextPage = () => {
                         variant="body1"
                         color="textSecondary"
                     >
-                        {data?.ens?.name}
+                        {wallet?.name}
                     </Typography>
                     <Typography
                         variant="subtitle1"
+                        color="textSecondary"
                     >
-                        Address: {data?.address}
+                        Network: {chain?.name}
+                    </Typography>
+                    <Typography
+                        variant="subtitle1"
+                        color="textSecondary"
+                    >
+                        Address: {wallet?.address}
+                    </Typography>
+                    <Typography
+                        variant="subtitle1"
+                        color="textSecondary"
+                    >
+                        {`Balance: ${formatEther(balance)} ${NETWORK_COIN_SYMBOL}`}
                     </Typography>
                     <Tabs
                         indicatorColor="primary"
@@ -77,7 +125,6 @@ const Account: NextPage = () => {
                         ))}
                     </Tabs>
                     <Divider sx={{ mb: 3 }} />
-                    {currentTab === 'coins' && <AccountCoins accountData={accountData} />}
                     {currentTab === 'transactions' && <AccountTransactions />}
                 </Container>
             </Box>

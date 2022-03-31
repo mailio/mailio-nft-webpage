@@ -1,65 +1,46 @@
-// API key for Ethereum node
+import { CoinbaseWallet } from "@web3-react/coinbase-wallet";
+import { MetaMask } from "@web3-react/metamask";
+import { Network } from "@web3-react/network";
+import { Connector } from "@web3-react/types";
+import { WalletConnect } from "@web3-react/walletconnect";
+import { coinbaseWallet } from "../components/web3/connectors/coinbase";
+import { metaMask } from "../components/web3/connectors/metamask";
+import { walletConnect } from "../components/web3/connectors/wallet-connect";
 
-import { chain, defaultChains, InjectedConnector } from "wagmi";
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
-import { WalletLinkConnector } from 'wagmi/connectors/walletLink';
-
-// Two popular services are Infura (infura.io) and Alchemy (alchemy.com)
-export const infuraId = process.env.INFURA_ID;
 export const appName: string | undefined = process.env.APP_NAME;
 
-// Chains for connectors to support
-export const chains = defaultChains;
+// based on current connector return connector name (wallet name)
+export const getWeb3ConnectorName = (connector: Connector): string => {
+    if (connector instanceof MetaMask) return 'MetaMask';
+    if (connector instanceof WalletConnect) return 'WalletConnect';
+    if (connector instanceof CoinbaseWallet) return 'Coinbase';
+    if (connector instanceof Network) return 'Network';
+    return 'Unknown';
+};
 
-interface WagmiConfig {
-    chainId?: number;
+// based on current connector return logo
+export const getWeb3ConnectorLogo = (connector: Connector): string => {
+    if (connector instanceof MetaMask) return '/images/meta-mask-fox.svg';
+    if (connector instanceof WalletConnect) return '/images/wallet-connect-logo.svg';
+    if (connector instanceof CoinbaseWallet) return '/images/coinbase-wallet-logo.svg';
+    if (connector instanceof Network) return '';
+    return '';
 }
 
-export interface WalletDisplay {
-    name: string;
-    caption?: string;
-    image: string;
-}
-
-export const walltConnectors = (config: WagmiConfig) => {
-    const rpcUrl = chains.find((x) => x.id === config.chainId)?.rpcUrls?.[0] ?? chain.mainnet.rpcUrls[0];
-    return [
-        new InjectedConnector({
-            chains,
-            options: { shimDisconnect: true },
-        }),
-        new WalletConnectConnector({
-            options: {
-                infuraId,
-                qrcode: true,
-            },
-        }),
-        new WalletLinkConnector({
-            options: {
-                appName: appName ? appName : 'Unknown app',
-                jsonRpcUrl: `${rpcUrl}/${infuraId}`,
-            },
-        }),
-    ]
-}
-
-export const displayWalletConnectors: WalletDisplay[] = [
-    {
-        name: 'MetaMask',
-        caption: 'Connect Your MetaMask Wallet',
-        image: '/images/meta-mask-fox.svg',
-    },
-    {
-        name: 'WalletConnect',
-        caption: 'Connect with Your Wallet Connect',
-        image: '/images/wallet-connect-logo.svg',
-    },
-    {
-        name: 'Coinbase Wallet',
-        caption: 'Connect with Your Coinbase Wallet',
-        image: '/images/coinbase-wallet-logo.svg',
+// converting an active wallets name to appropriate connector to disconnect from
+export const walletNameToConnector = (walletName: string) => {
+    switch (walletName) {
+        case getWeb3ConnectorName(metaMask):
+            return metaMask;
+        case getWeb3ConnectorName(coinbaseWallet):
+            return coinbaseWallet;
+        case getWeb3ConnectorName(walletConnect):
+            return walletConnect;
+        default:
+            return null;
     }
-];
+}
+
 
 export const shortenWalletAddress = (address: string, length: number = 6) => {
     return address.slice(0, length) + '...' + address.slice(address.length - length);

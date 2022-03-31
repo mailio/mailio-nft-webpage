@@ -1,28 +1,34 @@
 import { AppBar, Box, Button, Container, IconButton, Toolbar, Link, Avatar, ButtonBase } from '@mui/material';
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import NextLink from 'next/link';
 import { Logo } from './logo';
 import WalletConnectDialog from './dialogs/wallet-connect-dialog';
-import { useAccount } from 'wagmi';
-import { AccountPopover } from './account-popover';
+// import { useAccount } from 'wagmi';
 import { Menu } from '@mui/icons-material';
+import { AccountPopover } from './account/account-popover';
+import { useSelector } from '../store';
+import { getFirstActiveWallet } from '../store/store-getters';
+import { MyWallet, WalletStore } from '../store/wallet-store';
+import { Web3ReactHooks } from '@web3-react/core';
+import { hooks } from './web3/connectors/metamask';
 
 interface MainNavbarProps {
     onOpenSidebar?: () => void;
 }
 
 interface AccountButtonProps {
-    accountData: any;
+    accountData: MyWallet;
+    provider?: ReturnType<Web3ReactHooks['useProvider']>;
 }
 
-const AccountButton = (props: AccountButtonProps) => {
+const AccountButton: FC<AccountButtonProps> = (props: AccountButtonProps) => {
     const { accountData } = props;
     const anchorRef = useRef<HTMLButtonElement | null>(null);
     const [openPopover, setOpenPopover] = useState<boolean>(false);
 
     const user = {
-        avatar: accountData.ens?.avatar ? accountData.ens.avatar : '/images/icn-user.svg',
-        name: accountData.ens?.name,
+        avatar: accountData.avatar ? accountData.avatar : '/images/icn-user.svg',
+        name: (accountData.ensNames && accountData.ensNames?.length > 0) ? accountData.ensNames[0] : accountData.address,
     };
 
     const handleOpenPopover = (): void => {
@@ -68,13 +74,47 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
     const anchorRef = useRef<HTMLButtonElement | null>(null);
 
     const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
+    const [activeWallet, setActiveWallet] = useState<MyWallet>();
+
+    const walletStore: WalletStore = useSelector((state) => state.wallet);
 
     const handleConnectWalletClick = () => {
         setWalletModalOpen(true);
     };
-    const [{ data: accountData }] = useAccount({
-        fetchEns: true,
-    });
+
+    const { useProvider } = hooks;
+
+    const provider = useProvider();
+
+    useEffect(() => {
+        if (walletStore.wallets.length > 0) {
+            // find active wallet
+            const aw = getFirstActiveWallet(walletStore);
+            if (aw) {
+                setActiveWallet(aw);
+            } else {
+                setActiveWallet(undefined);
+            }
+        } else {
+            setActiveWallet(undefined);
+        }
+    }, [walletStore, walletStore.wallets]);
+
+    useEffect(() => {
+        provider?.addListener('network', (e: Event) => {
+            console.log('network changed: ', e);
+        });
+    }, [provider]);
+
+    useEffect(() => {
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', (e: any) => {
+                if (e.length > 0) {
+                    console.log('account changed: ', e);
+                }
+            });
+        }
+    }, []);
 
     return (
         <>
@@ -178,9 +218,9 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                     Example Link 3
                                 </Link>
                             </NextLink>
-                            {accountData ? (
+                            {activeWallet ? (
                                 <AccountButton
-                                    accountData={accountData}
+                                    accountData={activeWallet}
                                 />
                             ) : (
                                 <Button

@@ -5,11 +5,16 @@ import { shortenHash } from '../../utility/walletUtils';
 import { ETHERSCAN_URL, NETWORK_COIN_SYMBOL } from '../../config';
 import { formatDistanceToNow } from 'date-fns';
 import { ethers } from 'ethers';
+import toast from 'react-hot-toast';
+import { WalletStore } from '../../store/wallet-store';
+import { useSelector } from '../../store';
+import { getFirstActiveWallet } from '../../store/store-getters';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.secondary.main,
         color: theme.palette.common.white,
+        paddingTop: '1.2rem',
     },
     [`&.${tableCellClasses.body}`]: {
         color: theme.palette.secondary.main,
@@ -31,16 +36,23 @@ export const AccountTransactions: FC = () => {
 
     const [transactions, setTransactions] = useState<any[]>([]);
 
+    const walletStore: WalletStore = useSelector((state) => state.wallet);
+
     useEffect(() => {
-        axios.get('/api/transactions/0x1b1dc08159d2ec270ca851d71ea6dfa0c1a3375a').then(res => {
-            if (res.data?.result) {
-                setTransactions(res.data.result);
-                console.log(res.data.result);
-            }
-        }).catch(err => {
-            console.error(err);
-        });
-    }, []);
+        const activeWallet = getFirstActiveWallet(walletStore);
+        if (activeWallet) {
+
+            axios.get(`/api/transactions/${activeWallet.address}`).then(res => {
+                if (res.data?.result) {
+                    console.log('res.data.result', res, res.data, res.data.result);
+                    setTransactions(res.data.result);
+                }
+            }).catch(err => {
+                console.error(err);
+                toast.error(err.message);
+            });
+        }
+    }, [walletStore]);
 
     return (
         <Box>
@@ -55,7 +67,7 @@ export const AccountTransactions: FC = () => {
                 >
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell align="center">Txn Hash</StyledTableCell>
+                            <StyledTableCell align="center" sx={{ justifyContent: 'center' }}>Txn Hash</StyledTableCell>
                             <StyledTableCell align='center'>Age</StyledTableCell>
                             <StyledTableCell align='center'>From</StyledTableCell>
                             <StyledTableCell align='center'></StyledTableCell>
