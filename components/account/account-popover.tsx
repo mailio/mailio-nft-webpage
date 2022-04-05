@@ -1,14 +1,11 @@
 import { Avatar, Box, Divider, Popover, Typography, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import NextLink from 'next/link';
 import { AccountCircle, Logout } from "@mui/icons-material";
-import { shortenWalletAddress, walletNameToConnector } from "../../utility/walletUtils";
+import { shortenWalletAddress } from "../../utility/walletUtils";
 import { useRouter } from "next/router";
 import { User } from "../../icons/user";
-import { cleanWalletCache, MyWallet, WalletStore } from "../../store/wallet-store";
-import { useDispatch, useSelector } from "../../store";
-import { getFirstActiveWallet } from "../../store/store-getters";
-import { disconnectWallet } from "../web3/connect";
+import { useWeb3 } from "../../hooks/use-web3";
 
 interface AccountPopoverProps {
     anchorEl: null | Element;
@@ -20,42 +17,14 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
     const { anchorEl, onClose, open, ...other } = props;
     const router = useRouter();
 
-    const walletStore: WalletStore = useSelector((state) => state.wallet)
-    const dispatch = useDispatch();;
-
-    const [wallet, setWallet] = useState<MyWallet>();
+    const { wallet, disconnect } = useWeb3();
 
     // handle wallet disconnect
     const handleDisconnect = (): void => {
-
-        const activeWallet = getFirstActiveWallet(walletStore);
-
-        // get active wallet to disconnect from
-        if (activeWallet) {
-            const conn = walletNameToConnector(activeWallet.walletName);
-            if (conn != null) {
-                disconnectWallet(conn);
-            }
-        }
-
-        //@ts-ignore
-        dispatch(cleanWalletCache());
-
+        disconnect()
         onClose?.();
         router.push('/');
     };
-
-    useEffect(() => {
-        if (walletStore.wallets.length > 0) {
-            const aw = getFirstActiveWallet(walletStore);
-            if (aw) {
-                setWallet(aw);
-            }
-        }
-    }, [walletStore]);
-
-    useEffect(() => {
-    }, []);
 
     return (
         <Popover
@@ -92,7 +61,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
                     }}
                 >
                     <Typography variant="subtitle1">
-                        {wallet?.name}
+                        {wallet?.ensName}
                     </Typography>
                     <Typography
                         color="textSecondary"

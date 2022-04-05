@@ -1,19 +1,15 @@
 import { Network } from "@ethersproject/networks";
 import { Box, Container, Divider, Tab, Tabs, Typography } from "@mui/material";
-import { Web3ReactHooks } from "@web3-react/core";
 import { BigNumber } from "ethers";
+import { BaseProvider } from "@ethersproject/providers";
 import { formatEther } from "ethers/lib/utils";
 import { NextPage } from "next";
 import Head from "next/head";
 import { ChangeEvent, useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { AccountTransactions } from "../components/account/account-transactions";
 import { MainLayout } from "../components/main-layout";
-import { BasicChainInformation, CHAINS, ExtendedChainInformation } from "../components/web3/chains";
 import { NETWORK_COIN_SYMBOL } from "../config";
-import { useSelector } from "../store";
-import { getFirstActiveWallet } from "../store/store-getters";
-import { MyWallet, WalletStore } from "../store/wallet-store";
+import { useWeb3 } from "../hooks/use-web3";
 
 const tabs = [
     { label: 'Transactions', value: 'transactions' },
@@ -22,46 +18,31 @@ const tabs = [
 const Account: NextPage = () => {
     const [currentTab, setCurrentTab] = useState<string>('transactions');
 
-    const walletStore: WalletStore = useSelector((state) => state.wallet);
-
-    const [wallet, setWallet] = useState<MyWallet>();
     const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
-    const [chain, setChain] = useState<ExtendedChainInformation | BasicChainInformation>();
+    const [loadingBalance, setLoadingBalance] = useState<boolean>(false);
 
-    const getBalance = async (provider: ReturnType<Web3ReactHooks['useProvider']>, address: string): Promise<BigNumber> => {
+    const { wallet, provider } = useWeb3();
+
+    const getBalance = async (provider: BaseProvider, address: string): Promise<BigNumber> => {
         if (provider && address) {
             return provider.getBalance(address);
         }
         return BigNumber.from(0);
     };
 
-    const getNetwork = async (provider: ReturnType<Web3ReactHooks['useProvider']>): Promise<Network | null> => {
-        if (provider) {
-            return provider.getNetwork();
-        }
-        return null;
-    };
-
     useEffect(() => {
-        const activeWallet = getFirstActiveWallet(walletStore);
-        if (activeWallet) {
-            setWallet(activeWallet);
-            getBalance(activeWallet.provider, activeWallet.address).then((balance) => {
+        if (wallet?.address && provider) {
+            setLoadingBalance(true);
+            getBalance(provider, wallet.address).then((balance) => {
                 setBalance(balance);
-            }).catch((e) => {
-                console.error(e);
-                toast.error(e.message);
-            });
-
-            getNetwork(activeWallet.provider).then((network) => {
-                if (network) {
-                    const chainId = network.chainId;
-                    const chain = CHAINS[chainId];
-                    setChain(chain);
-                }
+            }).catch((error) => {
+                console.error(error);
+            }).finally(() => {
+                setLoadingBalance(false);
             });
         }
-    }, [walletStore]);
+    }, [wallet, provider]);
+
 
     return (
         <>
@@ -86,13 +67,7 @@ const Account: NextPage = () => {
                         variant="body1"
                         color="textSecondary"
                     >
-                        {wallet?.name}
-                    </Typography>
-                    <Typography
-                        variant="subtitle1"
-                        color="textSecondary"
-                    >
-                        Network: {chain?.name}
+                        {wallet?.ensName}
                     </Typography>
                     <Typography
                         variant="subtitle1"
@@ -104,7 +79,8 @@ const Account: NextPage = () => {
                         variant="subtitle1"
                         color="textSecondary"
                     >
-                        {`Balance: ${formatEther(balance)} ${NETWORK_COIN_SYMBOL}`}
+                        {!loadingBalance && (`Balance: ${formatEther(balance)} ${NETWORK_COIN_SYMBOL}`)}
+                        {loadingBalance && 'Loading balance...'}
                     </Typography>
                     <Tabs
                         indicatorColor="primary"

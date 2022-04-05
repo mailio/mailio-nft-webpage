@@ -4,11 +4,10 @@ import axios from 'axios';
 import { shortenHash } from '../../utility/walletUtils';
 import { ETHERSCAN_URL, NETWORK_COIN_SYMBOL } from '../../config';
 import { formatDistanceToNow } from 'date-fns';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import toast from 'react-hot-toast';
-import { WalletStore } from '../../store/wallet-store';
 import { useSelector } from '../../store';
-import { getFirstActiveWallet } from '../../store/store-getters';
+import { useWeb3 } from '../../hooks/use-web3';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -36,23 +35,22 @@ export const AccountTransactions: FC = () => {
 
     const [transactions, setTransactions] = useState<any[]>([]);
 
-    const walletStore: WalletStore = useSelector((state) => state.wallet);
+    const { wallet } = useWeb3();
 
     useEffect(() => {
-        const activeWallet = getFirstActiveWallet(walletStore);
-        if (activeWallet) {
+        if (wallet?.address) {
 
-            axios.get(`/api/transactions/${activeWallet.address}`).then(res => {
+            axios.get(`/api/transactions/${wallet.address}`).then(res => {
                 if (res.data?.result) {
-                    console.log('res.data.result', res, res.data, res.data.result);
-                    setTransactions(res.data.result);
+                    if (Array.isArray(res.data.result)) {
+                        setTransactions(res.data.result);
+                    }
                 }
             }).catch(err => {
                 console.error(err);
-                toast.error(err.message);
             });
         }
-    }, [walletStore]);
+    }, [wallet]);
 
     return (
         <Box>
@@ -127,8 +125,8 @@ export const AccountTransactions: FC = () => {
                                         {shortenHash(tx.to, 12)}
                                     </Link>
                                 </StyledTableCell>
-                                <StyledTableCell align='center'>{ethers.utils.formatEther(tx.value)}&nbsp;{`${NETWORK_COIN_SYMBOL}`}</StyledTableCell>
-                                <StyledTableCell align='center'>{ethers.utils.formatEther(+tx.gasUsed * +tx.gasPrice)}</StyledTableCell>
+                                <StyledTableCell align='center'>{Math.round(+ethers.utils.formatUnits(BigNumber.from(tx.value), 18) * 1e4) / 1e4}&nbsp;{`${NETWORK_COIN_SYMBOL}`}</StyledTableCell>
+                                <StyledTableCell align='center'>{Math.round(+ethers.utils.formatUnits(BigNumber.from(tx.gasUsed).mul(tx.gasPrice)) * 1e4) / 1e4}</StyledTableCell>
                             </StyledTableRow>
                         ))}
                     </TableBody>

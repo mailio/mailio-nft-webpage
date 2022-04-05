@@ -2,14 +2,12 @@ import { AppBar, Box, Button, Container, IconButton, Toolbar, Link, Avatar, Butt
 import { FC, useEffect, useRef, useState } from 'react';
 import NextLink from 'next/link';
 import { Logo } from './logo';
-import WalletConnectDialog from './dialogs/wallet-connect-dialog';
-import { Menu } from '@mui/icons-material';
+import { ConstructionOutlined, Menu } from '@mui/icons-material';
 import { AccountPopover } from './account/account-popover';
-import { useSelector } from '../store';
-import { getFirstActiveWallet } from '../store/store-getters';
-import { MyWallet, WalletStore } from '../store/wallet-store';
-import { Web3ReactHooks } from '@web3-react/core';
-import { hooks } from './web3/connectors/metamask';
+import { MyWallet } from '../types/my-wallet';
+import { useWeb3 } from '../hooks/use-web3';
+import { DEFAULT_CHAINS, DEFAULT_CHAIN_ID } from '../config';
+import toast from 'react-hot-toast';
 
 interface MainNavbarProps {
     onOpenSidebar?: () => void;
@@ -17,7 +15,6 @@ interface MainNavbarProps {
 
 interface AccountButtonProps {
     accountData: MyWallet;
-    provider?: ReturnType<Web3ReactHooks['useProvider']>;
 }
 
 const AccountButton: FC<AccountButtonProps> = (props: AccountButtonProps) => {
@@ -26,8 +23,8 @@ const AccountButton: FC<AccountButtonProps> = (props: AccountButtonProps) => {
     const [openPopover, setOpenPopover] = useState<boolean>(false);
 
     const user = {
-        avatar: accountData.avatar ? accountData.avatar : '/images/icn-user.svg',
-        name: (accountData.ensNames && accountData.ensNames?.length > 0) ? accountData.ensNames[0] : accountData.address,
+        avatar: accountData.avatar ? accountData.avatar : '',
+        name: (accountData.ensName && accountData.ensName?.length > 0) ? accountData.ensName : accountData.address,
     };
 
     const handleOpenPopover = (): void => {
@@ -70,50 +67,47 @@ const AccountButton: FC<AccountButtonProps> = (props: AccountButtonProps) => {
 
 export const MainNavbar: FC<MainNavbarProps> = (props) => {
     const { onOpenSidebar } = props;
-    const anchorRef = useRef<HTMLButtonElement | null>(null);
 
-    const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
-    const [activeWallet, setActiveWallet] = useState<MyWallet>();
+    const { connect, wallet, provider } = useWeb3();
 
-    const walletStore: WalletStore = useSelector((state) => state.wallet);
+    const connectWallet = async () => {
+        try {
+            await connect();
 
-    const handleConnectWalletClick = () => {
-        setWalletModalOpen(true);
+        } catch (e) {
+            console.warn(e);
+        }
     };
 
-    const { useProvider } = hooks;
-
-    const provider = useProvider();
-
     useEffect(() => {
-        if (walletStore.wallets.length > 0) {
-            // find active wallet
-            const aw = getFirstActiveWallet(walletStore);
-            if (aw) {
-                setActiveWallet(aw);
-            } else {
-                setActiveWallet(undefined);
+        // chehck if on the right network
+        provider?.getNetwork()?.then((network) => {
+            console.log('network', network);
+            // if user not on our desired network, ask to switch
+            if (network.chainId !== DEFAULT_CHAIN_ID) {
+                if (!window.ethereum) {
+                    toast.error('No crypto wallet found');
+                    return;
+                }
+                const ch = DEFAULT_CHAINS[DEFAULT_CHAIN_ID];
+                console.log('switching to chain: ', ch);
+                window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [
+                        {
+                            ...ch,
+                        }
+                    ]
+                }).then(() => {
+                    toast.success('Succesfully switched network');
+                }).catch((e) => {
+                    console.error(e);
+                    toast.error("Couldn't switch to the correct network");
+                });
             }
-        } else {
-            setActiveWallet(undefined);
-        }
-    }, [walletStore, walletStore.wallets]);
-
-    useEffect(() => {
-        provider?.addListener('network', (e: Event) => {
-            console.log('network changed: ', e);
         });
     }, [provider]);
 
-    useEffect(() => {
-        if (window.ethereum) {
-            window.ethereum.on('accountsChanged', (e: any) => {
-                if (e.length > 0) {
-                    console.log('account changed: ', e);
-                }
-            });
-        }
-    }, []);
 
     return (
         <>
@@ -125,11 +119,6 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                 }}
             >
                 <Container maxWidth="lg">
-                    <WalletConnectDialog
-                        open={walletModalOpen}
-                        onClose={() => setWalletModalOpen(false)}
-                        onConnect={() => console.log('connected')}
-                    />
                     <Toolbar
                         disableGutters
                         sx={{ minHeight: 64 }}
@@ -217,13 +206,13 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                     Example Link 3
                                 </Link>
                             </NextLink>
-                            {activeWallet ? (
+                            {wallet ? (
                                 <AccountButton
-                                    accountData={activeWallet}
+                                    accountData={wallet}
                                 />
                             ) : (
                                 <Button
-                                    onClick={handleConnectWalletClick}
+                                    onClick={connectWallet}
                                     size="medium"
                                     sx={{ ml: 2 }}
                                     variant="contained"

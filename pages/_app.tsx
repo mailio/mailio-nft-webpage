@@ -18,15 +18,12 @@ import { FC, useEffect } from 'react';
 import Head from 'next/head';
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from '../store';
+import { Web3Provider } from '../contexts/web3modal-context';
 
 type MyAppProps = AppProps & {
   Component: NextPage;
   emotionCache: EmotionCache;
 }
-// interface MyAppProps extends AppProps & {
-//   emotionCache?: EmotionCache;
-//   Component: NextPage;
-// }
 
 Router.events.on('routeChangeStart', nProgress.start);
 Router.events.on('routeChangeError', nProgress.done);
@@ -55,23 +52,25 @@ const MyApp: FC<MyAppProps> = (props) => {
       </Head>
       <ReduxProvider store={store}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <SettingsProvider>
-            <SettingsConsumer>
-              {({ settings }) => (
-                <ThemeProvider
-                  theme={createTheme({
-                    responsiveFontSizes: settings.responsiveFontSizes,
-                    mode: settings.theme,
-                  })}
-                >
-                  <CssBaseline />
-                  <Toaster position="top-center" />
+          <Web3Provider>
+            <SettingsProvider>
+              <SettingsConsumer>
+                {({ settings }) => (
+                  <ThemeProvider
+                    theme={createTheme({
+                      responsiveFontSizes: true,
+                      mode: settings.theme,
+                    })}
+                  >
+                    <CssBaseline />
+                    <Toaster position="top-center" />
 
-                  {getLayout(<Component {...pageProps} />)}
-                </ThemeProvider>
-              )}
-            </SettingsConsumer>
-          </SettingsProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                  </ThemeProvider>
+                )}
+              </SettingsConsumer>
+            </SettingsProvider>
+          </Web3Provider>
         </LocalizationProvider>
       </ReduxProvider>
     </CacheProvider>
