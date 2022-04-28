@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { FC } from 'react';
 import { Box, Container, Divider, Grid, Typography, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { SpeedBig } from '../../icons/speed-big';
@@ -19,6 +19,8 @@ import { Drafts } from '../../icons/drafts';
 import Link from 'next/link';
 import { CardsExample } from '../widgets/cards';
 import Image from 'next/image';
+import NextLink from 'next/link';
+import { HowItWorks } from './how-it-works';
 
 export const HomePage: FC = (props) => {
     const theme = useTheme();
@@ -29,7 +31,7 @@ export const HomePage: FC = (props) => {
                 sx={{
                     backgroundColor: 'background.default',
                     pt: 6,
-                    pb: 6,
+                    pb: 21,
                 }}
                 {...props}
             >
@@ -41,68 +43,42 @@ export const HomePage: FC = (props) => {
                         flexDirection: 'column'
                     }}
                 >
-                    <h2>Typography</h2>
                     <Typography
                         align="center"
                         variant="h1"
+                        sx={{
+                            mt: 21,
+                            mb: 6,
+                        }}
                     >
-                        H1
-                    </Typography>
-                    <Typography
-                        align="center"
-                        variant="h2"
-                    >
-                        H2
-                    </Typography>
-                    <Typography
-                        align="center"
-                        variant="h3"
-                    >
-                        H3
-                    </Typography>
-                    <Typography
-                        align="center"
-                        variant="h4"
-                    >
-                        H4
-                    </Typography>
-                    <Typography
-                        align="center"
-                        variant="h5"
-                    >
-                        H5
-                    </Typography>
-                    <Typography
-                        align="center"
-                        variant="body1"
-                    >
-                        Body 1
+                        Mailio Knowledge NFTs
                     </Typography>
                     <Typography
                         align="center"
                         variant="body2"
                         color="textSecondary"
                     >
-                        Body 2
+                        Claim Your NFTs for the Mailio content You&apos;ve consumed
                     </Typography>
-                    <Typography
-                        align="center"
-                        variant="subtitle1"
+                    <Box
+                        sx={{
+                            mt: 6,
+                            mb: 6,
+                        }}
                     >
-                        Subtitle 1
-                    </Typography>
-                    <Typography
-                        align="center"
-                        variant="subtitle2"
-                    >
-                        Subtitle 2
-                    </Typography>
-                    <Typography
-                        align="center"
-                        variant="caption"
-                    >
-                        Caption
-                    </Typography>
+                        <NextLink
+                            href="/library"
+                            passHref
+                        >
+                            <Button
+                                size="medium"
+                                sx={{ ml: 2 }}
+                                variant="contained"
+                            >
+                                Show Library
+                            </Button>
+                        </NextLink>
+                    </Box>
                 </Container>
             </Box>
             <Divider />
@@ -122,312 +98,59 @@ export const HomePage: FC = (props) => {
                         flexDirection: 'column'
                     }}
                 >
-                    <Box>
+                    <Box
+                        id="whatisthis"
+                    >
                         <Typography
                             align="center"
                             sx={{ pb: 6 }}
                             variant="h2"
                         >
-                            Custom Icons
+                            What is this?
                         </Typography>
                         <Grid
                             container
                             flexDirection="row"
+                            spacing={6}
                         >
                             <Grid
                                 item
+                                xs={12}
+                                sm={12}
+                                md={6}
                                 sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center"
                                 }}
                             >
-                                <User
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
                                 <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
+                                    variant="body1"
+                                    color="textSecondary"
+                                    align="center"
+                                    sx={{
+                                        pb: 6,
+                                    }}
                                 >
-                                    User
+                                    Mailio Knowledge NFTs are digital badges, minted <b>for free</b> for anyone who consumes Mailio content.
                                 </Typography>
                             </Grid>
                             <Grid
                                 item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
+                                xs={12}
+                                sm={12}
+                                md={6}
                             >
-                                <Trash
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
+                                <Box
+                                    sx={{
+                                        borderRadius: '5px',
+                                        overflow: 'hidden',
+                                    }}
                                 >
-                                    Trash
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <Storage
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Storage
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <Show
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Show
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <Sent
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Send
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <Refresh
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Refresh
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <MobileScreenLock
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Mobile Lock
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <MaximizeWindow
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Maximize Window
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <UnreadEmail
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Mark Unread
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <ReadEmail
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Mark Read
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <Inbox
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Inbox
-                                </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    p: 6,
-                                    width: '150px',
-                                    borderRadius: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'neutral.50',
-                                    },
-                                    textAlign: 'center',
-                                }}
-                            >
-                                <Drafts
-                                    fontSize='medium'
-                                    color='secondary'
-                                />
-                                <Typography
-                                    color='secondary'
-                                    variant='subtitle1'
-                                >
-                                    Drafts
-                                </Typography>
+                                    <Image src="/images/mailio-knowhow.jpg" width={1254} height={836} alt="handshake" />
+                                </Box>
                             </Grid>
                         </Grid>
-                    </Box>
-                    <Box>
-                        <Link
-                            href="https://fonts.google.com/icons"
-                            passHref={true}
-                        >
-                            <Typography
-                                color='secondary'
-                                variant='subtitle1'
-                                sx={{
-                                    cursor: 'pointer',
-                                    textDecoration: 'underline',
-                                }}
-                            >
-                                Material Icons Library
-                            </Typography>
-                        </Link>
                     </Box>
                 </Container>
             </Box>
@@ -448,174 +171,67 @@ export const HomePage: FC = (props) => {
                         flexDirection: 'column'
                     }}
                 >
-                    <Box>
+                    <Box
+                        id="why"
+                    >
                         <Typography
                             align="center"
                             sx={{ pb: 6 }}
                             variant="h2"
                         >
-                            Graphics
+                            Why?
                         </Typography>
                         <Grid
                             container
                             flexDirection="row"
-                            spacing={2}
+                            spacing={6}
                         >
                             <Grid
                                 item
+                                xs={12}
                                 sm={12}
-                                md={4}
-                                textAlign="center"
+                                md={6}
                             >
-                                <Image
-                                    src="/images/img-handshake.svg"
-                                    alt="handshake"
-                                    width={220}
-                                    height={220}
-                                />
-                            </Grid>
-                            <Grid
-                                item
-                                sm={12}
-                                md={4}
-                                textAlign="center"
-                            >
-                                <Image
-                                    src="/images/img-inbox.svg"
-                                    alt="inbox"
-                                    width={220}
-                                    height={220}
-                                />
-                            </Grid>
-                            <Grid
-                                item
-                                sm={12}
-                                md={4}
-                                textAlign="center"
-                            >
-                                <Image
-                                    src="/images/img-trust.svg"
-                                    alt="trust"
-                                    width={220}
-                                    height={220}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            container
-                            flexDirection="row"
-                            spacing={2}
-                        >
-                            <Grid
-                                item
-                                sm={12}
-                                md={4}
-                                textAlign="center"
-                            >
-                                <SpeedBig />
-                            </Grid>
-                            <Grid
-                                item
-                                sm={12}
-                                md={4}
-                                textAlign="center"
-                            >
-                                <BlockBig />
-                            </Grid>
-                            <Grid
-                                item
-                                sm={12}
-                                md={4}
-                                textAlign="center"
-                            >
-                                <UserBig />
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Container>
-            </Box>
-            <Divider />
-            <Box
-                sx={{
-                    backgroundColor: 'background.paper',
-                    pt: 6,
-                    pb: 6,
-                }}
-                {...props}
-            >
-                <Container
-                    maxWidth="md"
-                    sx={{
-                        alignItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}
-                >
-                    <Box>
-                        <Typography
-                            align="center"
-                            sx={{ pb: 6 }}
-                            variant="h2"
-                        >
-                            Buttons
-                        </Typography>
-                        <Grid
-                            container
-                            flexDirection="row"
-                            spacing={12}
-                        >
-                            <Grid
-                                item
-                                sm={12}
-                                md={4}
-                                textAlign="center"
-                            >
-                                <Button
-                                    size="large"
-                                    variant="contained"
+                                <Box
+                                    sx={{
+                                        borderRadius: '5px',
+                                        overflow: 'hidden',
+                                    }}
                                 >
-                                    Contained
-                                </Button>
+                                    <Image src="/images/mailio-handling-spam.jpg" width={1254} height={836} alt="handshake" />
+                                </Box>
                             </Grid>
                             <Grid
                                 item
+                                xs={12}
                                 sm={12}
-                                md={4}
-                                textAlign="center"
+                                md={6}
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center"
+                                }}
                             >
-                                <Button
-                                    size="large"
-                                    variant="outlined"
+                                <Typography
+                                    variant="body1"
+                                    color="textSecondary"
+                                    align="center"
+                                    sx={{
+                                        pb: 6,
+                                    }}
                                 >
-                                    Outlined
-                                </Button>
-                            </Grid>
-                            <Grid
-                                item
-                                sm={12}
-                                md={4}
-                                textAlign="center"
-                            >
-                                <Button
-                                    size="large"
-                                    variant="text"
+                                    We want our current and new users to be able to benefit from understanding the Mailio ecosystem.
+                                </Typography>
+                                <Typography
+                                    variant="subtitle1"
+                                    color="textSecondary"
+                                    align="center"
+                                    sx={{
+                                        pb: 6,
+                                    }}
                                 >
-                                    Text
-                                </Button>
-                            </Grid>
-                            <Grid
-                                item
-                                sm={12}
-                                md={4}
-                                textAlign="center"
-                            >
-                                <Button
-                                    size="large"
-                                    variant="contained"
-                                    disabled
-                                >
-                                    Disabled
-                                </Button>
+                                    Old ways of doing email is not sustainable anymore. Mailio is working on a <b>new approach</b>.
+                                </Typography>
                             </Grid>
                         </Grid>
                     </Box>
@@ -644,9 +260,9 @@ export const HomePage: FC = (props) => {
                             sx={{ pb: 6 }}
                             variant="h2"
                         >
-                            Cards
+                            How does it work?
                         </Typography>
-                        <CardsExample />
+                        <HowItWorks />
                     </Box>
                 </Container>
             </Box>

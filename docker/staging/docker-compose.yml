@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  mailio-nft-web-staging:
+    build:
+      context: ../../
+      dockerfile: docker/staging/Dockerfile
+    image: mailio-nft-web-staging
+    ports:
+      - '3002:3000'

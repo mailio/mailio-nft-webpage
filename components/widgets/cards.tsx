@@ -1,25 +1,22 @@
 import type { FC } from 'react';
 import {
-    Avatar,
     Box,
     Button,
     Card,
     CardActions,
     CardContent,
-    CardMedia,
     Chip,
     Divider,
     Grid,
-    Stack,
     Typography
 } from '@mui/material';
-import { useTheme, styled } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { NavigateNext, Pending } from '@mui/icons-material';
 import { UserBig } from '../../icons/user-big';
 import { SpeedBig } from '../../icons/speed-big';
 import { User } from '../../icons/user';
-import HighlightCard from '../cards/highlight-card';
 import Link from 'next/link';
+import HighlightCard from './highlight-card';
 
 export const CardsExample: FC = () => {
     const theme = useTheme();

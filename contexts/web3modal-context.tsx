@@ -4,11 +4,13 @@ import { DEFAULT_CHAIN_ID, web3ProviderOptions } from '../config';
 import { ethers } from 'ethers';
 import PropTypes from 'prop-types';
 import { MyWallet } from '../types/my-wallet';
+import { DEFAULT_CHAINS } from '../blockchains';
 
 export interface Web3ContextValue {
     wallet: MyWallet | undefined;
     provider: ethers.providers.Web3Provider | undefined;
     connect: () => Promise<ethers.providers.Web3Provider | undefined>;
+    connectTo: (chainId: number) => Promise<ethers.providers.Web3Provider | undefined>;
     disconnect: () => void;
 }
 
@@ -20,6 +22,7 @@ export const Web3Context = createContext<Web3ContextValue>({
     wallet: undefined,
     provider: undefined,
     connect: () => Promise.resolve(undefined),
+    connectTo: (chainId: number) => Promise.resolve(undefined),
     disconnect: () => { }
 });
 
@@ -104,6 +107,7 @@ export const Web3Provider: FC<Web3ProviderProps> = (props) => {
         if (modal?.cachedProvider) {
             onConnect(modal);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modal]);
 
     // on page load init web3modal
@@ -129,6 +133,43 @@ export const Web3Provider: FC<Web3ProviderProps> = (props) => {
     }
 
     /**
+     * Connect to a specific chain (asking wallet to switch/add network before connecting)
+     * @param chainId chainId to connect to
+     * @returns 
+     */
+    const connectTo = async (chainId: number): Promise<ethers.providers.Web3Provider | undefined> => {
+        if (window.ethereum) {
+            // throw Error('No ethereum provider found');
+            const walletNetwork: any = window.ethereum;
+            if (!DEFAULT_CHAINS.hasOwnProperty(chainId)) {
+                throw Error('Provided ChainId not supported. Supported chains are: ', DEFAULT_CHAINS);
+            }
+            const walletNetworkVersion = walletNetwork.networkVersion;
+            console.log('current and default wallet network: ', walletNetwork, walletNetworkVersion);
+            if (walletNetwork !== chainId.toString()) {
+                return window.ethereum!.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [
+                        {
+                            ...DEFAULT_CHAINS[chainId.toString()],
+                        }
+                    ]
+                }).then(() => {
+                    return connect();
+                }).catch((e: any) => {
+                    console.error(e);
+                    return undefined;
+                });
+            } else {
+                return connect();
+            }
+        } else {
+            return connect();
+        }
+
+    };
+
+    /**
      * Disconnect wallet
      */
     const disconnect = () => {
@@ -141,6 +182,7 @@ export const Web3Provider: FC<Web3ProviderProps> = (props) => {
                 wallet,
                 provider,
                 connect,
+                connectTo,
                 disconnect,
             }}
         >

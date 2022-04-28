@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { SettingsConsumer, SettingsProvider } from '../contexts/settings-context';
 import '../theme/fonts/fonts.css';
+import '../theme/noise.css';
 
 
 import createEmotionCache from '../utility/createEmotionCache';
@@ -19,6 +20,10 @@ import Head from 'next/head';
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from '../store';
 import { Web3Provider } from '../contexts/web3modal-context';
+import { AuthConsumer, AuthProvider } from '../contexts/auth-context';
+import { LoadingMailio } from '../components/loading-mailio';
+import ErrorBoundary from '../components/widgets/error-boundary';
+import ClientError from '../components/widgets/client-error';
 
 type MyAppProps = AppProps & {
   Component: NextPage;
@@ -52,25 +57,34 @@ const MyApp: FC<MyAppProps> = (props) => {
       </Head>
       <ReduxProvider store={store}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Web3Provider>
-            <SettingsProvider>
-              <SettingsConsumer>
-                {({ settings }) => (
-                  <ThemeProvider
-                    theme={createTheme({
-                      responsiveFontSizes: true,
-                      mode: settings.theme,
-                    })}
-                  >
-                    <CssBaseline />
-                    <Toaster position="top-center" />
-
-                    {getLayout(<Component {...pageProps} />)}
-                  </ThemeProvider>
-                )}
-              </SettingsConsumer>
-            </SettingsProvider>
-          </Web3Provider>
+          <AuthProvider>
+            <Web3Provider>
+              <SettingsProvider>
+                <SettingsConsumer>
+                  {({ settings }) => (
+                    <ThemeProvider
+                      theme={createTheme({
+                        responsiveFontSizes: true,
+                        mode: settings.theme,
+                      })}
+                    >
+                      <CssBaseline />
+                      <Toaster position="top-center" />
+                      <ErrorBoundary>
+                        <AuthConsumer>
+                          {
+                            // making sure that we check the authentiation status first before children renedering
+                            (auth) => !auth.isInitialized ? (<LoadingMailio />) :
+                              getLayout(<Component {...pageProps} />)
+                          }
+                        </AuthConsumer>
+                      </ErrorBoundary>
+                    </ThemeProvider>
+                  )}
+                </SettingsConsumer>
+              </SettingsProvider>
+            </Web3Provider>
+          </AuthProvider>
         </LocalizationProvider>
       </ReduxProvider>
     </CacheProvider>

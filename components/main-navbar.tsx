@@ -1,13 +1,12 @@
 import { AppBar, Box, Button, Container, IconButton, Toolbar, Link, Avatar, ButtonBase } from '@mui/material';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import NextLink from 'next/link';
 import { Logo } from './logo';
-import { ConstructionOutlined, Menu } from '@mui/icons-material';
+import { Menu } from '@mui/icons-material';
 import { AccountPopover } from './account/account-popover';
 import { MyWallet } from '../types/my-wallet';
 import { useWeb3 } from '../hooks/use-web3';
-import { DEFAULT_CHAINS, DEFAULT_CHAIN_ID } from '../config';
-import toast from 'react-hot-toast';
+import { DEFAULT_CHAIN_ID } from '../config';
 
 interface MainNavbarProps {
     onOpenSidebar?: () => void;
@@ -68,46 +67,16 @@ const AccountButton: FC<AccountButtonProps> = (props: AccountButtonProps) => {
 export const MainNavbar: FC<MainNavbarProps> = (props) => {
     const { onOpenSidebar } = props;
 
-    const { connect, wallet, provider } = useWeb3();
+    const { connectTo, wallet, provider } = useWeb3();
 
     const connectWallet = async () => {
         try {
-            await connect();
+            await connectTo(DEFAULT_CHAIN_ID);
 
         } catch (e) {
             console.warn(e);
         }
     };
-
-    useEffect(() => {
-        // chehck if on the right network
-        provider?.getNetwork()?.then((network) => {
-            console.log('network', network);
-            // if user not on our desired network, ask to switch
-            if (network.chainId !== DEFAULT_CHAIN_ID) {
-                if (!window.ethereum) {
-                    toast.error('No crypto wallet found');
-                    return;
-                }
-                const ch = DEFAULT_CHAINS[DEFAULT_CHAIN_ID];
-                console.log('switching to chain: ', ch);
-                window.ethereum.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [
-                        {
-                            ...ch,
-                        }
-                    ]
-                }).then(() => {
-                    toast.success('Succesfully switched network');
-                }).catch((e) => {
-                    console.error(e);
-                    toast.error("Couldn't switch to the correct network");
-                });
-            }
-        });
-    }, [provider]);
-
 
     return (
         <>
@@ -116,6 +85,7 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                 sx={{
                     backgroundColor: 'background.paper',
                     color: 'text.secondary',
+                    boxShadow: '0 1px 6px 0px rgba(60,64,67,0.15)',
                 }}
             >
                 <Container maxWidth="lg">
@@ -132,7 +102,9 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                     marginTop: 2,
                                 }}
                             >
-                                <a>
+                                <a
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     <Logo
                                         sx={{
                                             display: {
@@ -168,7 +140,7 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                             }}
                         >
                             <NextLink
-                                href="/"
+                                href="#whatisthis"
                                 passHref
                             >
                                 <Link
@@ -176,11 +148,11 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                     underline="none"
                                     variant="subtitle2"
                                 >
-                                    Example Link 1
+                                    What is this?
                                 </Link>
                             </NextLink>
                             <NextLink
-                                href="/browse"
+                                href="#why"
                                 passHref
                             >
                                 <Link
@@ -189,11 +161,11 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                     underline="none"
                                     variant="subtitle2"
                                 >
-                                    Example Link 2
+                                    Why?
                                 </Link>
                             </NextLink>
                             <NextLink
-                                href="/"
+                                href="#howitworks"
                                 passHref
                             >
                                 <Link
@@ -203,7 +175,7 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                     underline="none"
                                     variant="subtitle2"
                                 >
-                                    Example Link 3
+                                    How does it work?
                                 </Link>
                             </NextLink>
                             {wallet ? (

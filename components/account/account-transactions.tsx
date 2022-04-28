@@ -1,35 +1,12 @@
-import { Box, Paper, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Link, Tooltip, Chip } from '@mui/material';
+import { Box, Paper, Table, TableBody, TableContainer, TableHead, TableRow, Link, Tooltip, Chip } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import { shortenHash } from '../../utility/walletUtils';
 import { ETHERSCAN_URL, NETWORK_COIN_SYMBOL } from '../../config';
 import { formatDistanceToNow } from 'date-fns';
 import { BigNumber, ethers } from 'ethers';
-import toast from 'react-hot-toast';
-import { useSelector } from '../../store';
 import { useWeb3 } from '../../hooks/use-web3';
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.secondary.main,
-        color: theme.palette.common.white,
-        paddingTop: '1.2rem',
-    },
-    [`&.${tableCellClasses.body}`]: {
-        color: theme.palette.secondary.main,
-        fontSize: 14,
-        borderBottom: `1px solid ${theme.palette.divider}`,
-    },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&.MuiTableRow-root': {
-        backgroundColor: theme.palette.common.white,
-    },
-    '&.MuiTableRow-hover:hover': {
-        backgroundColor: "#f4f6f8",
-    },
-}));
+import { StyledTableCell, StyledTableRow } from '../../theme/table/table-style';
 
 export const AccountTransactions: FC = () => {
 

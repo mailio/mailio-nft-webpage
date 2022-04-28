@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  mailio-nft-web-production:
+    build:
+      context: ../../
+      dockerfile: docker/production/Dockerfile
+    image: mailio-nft-web-production
+    ports:
+      - '3000:3000'

@@ -78,6 +78,42 @@ export const MainSidebar: FC<MainSidebarProps> = (props) => {
                             Home
                         </MainSidebarLink>
                     </NextLink>
+                    <NextLink
+                        href="/#whatisthis"
+                        passHref
+                    >
+                        <MainSidebarLink
+                            color="textSecondary"
+                            underline="none"
+                            variant="subtitle2"
+                        >
+                            What is this?
+                        </MainSidebarLink>
+                    </NextLink>
+                    <NextLink
+                        href="/#why"
+                        passHref
+                    >
+                        <MainSidebarLink
+                            color="textSecondary"
+                            underline="none"
+                            variant="subtitle2"
+                        >
+                            Why
+                        </MainSidebarLink>
+                    </NextLink>
+                    <NextLink
+                        href="/#howitworks"
+                        passHref
+                    >
+                        <MainSidebarLink
+                            color="textSecondary"
+                            underline="none"
+                            variant="subtitle2"
+                        >
+                            How does it work?
+                        </MainSidebarLink>
+                    </NextLink>
                     {wallet ? (
                         <>
                             <NextLink
