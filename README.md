@@ -1,3 +1,6 @@
+# Mailio NFT Web3 
+![https://discord.gg/hXjFS2zWra](https://img.shields.io/static/v1?label=discord&message=developers&color=green)
+![GitHub issues](https://img.shields.io/github/issues/mailio/mailio-nft-bridge)
 
 ## Running staging on single server
 
