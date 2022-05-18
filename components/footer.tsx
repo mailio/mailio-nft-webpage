@@ -1,20 +1,21 @@
-import { alpha, Box, Container, Divider, Grid, IconButton, Link, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+/* eslint-disable @next/next/no-img-element */
+import { Box, Container, Grid, IconButton, Link, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { FC } from 'react';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import TwitterIcon from '@mui/icons-material/Twitter';
 import { Logo } from './logo';
+import NextLink from 'next/link';
 
 const footerSections = [
     {
         title: 'Use Mailio',
         links: [
             {
-                title: 'Browse Components',
-                href: '/browse'
+                title: 'Get your address',
+                href: 'https://mail.io'
             },
             {
                 title: 'Documentation',
-                href: '/docs/welcome'
+                href: 'https://docs.mail.io'
             }
         ]
     },
@@ -23,53 +24,49 @@ const footerSections = [
         links: [
             {
                 title: 'Discord',
-                href: 'https://discord.gg/abc'
-            },
-            {
-                title: 'Telegram',
-                href: 'https://t.me/abc'
+                href: 'https://discord.gg/uzVbJA46E3'
             },
             {
                 title: 'Youtube',
-                href: 'https://www.youtube.com/channel/abc'
+                href: 'https://www.youtube.com/channel/UCArt7H6WT0PpFo6---BGpeA'
             }
         ],
     },
-    {
-        title: 'Developers',
-        links: [
-            {
-                title: 'Get started',
-                href: '/docs/welcome'
-            },
-            {
-                title: 'Documentation',
-                href: '/docs/welcome'
-            },
-            {
-                title: 'Tutorials',
-                href: '/tutorials'
-            },
-            {
-                title: 'Learn by doing',
-                href: '/learn-by-doing'
-            },
-            {
-                title: 'Set up local environment',
-                href: '/setup-local-environment'
-            }
-        ]
-    },
+    // {
+    //     title: 'Developers',
+    //     links: [
+    //         {
+    //             title: 'Get started',
+    //             href: 'https://github.com/mailio'
+    //         },
+    //         {
+    //             title: 'Documentation',
+    //             href: ''
+    //         },
+    //         {
+    //             title: 'Tutorials',
+    //             href: '/tutorials'
+    //         },
+    //         {
+    //             title: 'Learn by doing',
+    //             href: '/learn-by-doing'
+    //         },
+    //         {
+    //             title: 'Set up local environment',
+    //             href: '/setup-local-environment'
+    //         }
+    //     ]
+    // },
     {
         title: 'About mail.io',
         links: [
             {
                 title: 'About',
-                href: '/about'
+                href: 'https://mail.io'
             },
             {
                 title: 'Blog',
-                href: '/blog'
+                href: 'https://igor.technology/tag/blockchain/'
             },
             {
                 title: 'GitHub',
@@ -137,15 +134,19 @@ export const Footer: FC = (props) => {
                                     sm={1}
                                     md={1}
                                 >
-                                    <IconButton
-                                        sx={{
-                                            color: 'white',
-                                        }}
+                                    <NextLink
+                                        href="https://twitter.com/mailio"
+                                        passHref
                                     >
-                                        <TwitterIcon
-                                            fontSize="medium"
-                                        />
-                                    </IconButton>
+                                        <IconButton
+                                            sx={{
+                                                color: 'white',
+                                                mt: '3px',
+                                            }}
+                                        >
+                                            <img src="/images/discord.png" width="24px" height="24px" alt="discord" />
+                                        </IconButton>
+                                    </NextLink>
                                 </Grid>
                             </Grid>
                         </Grid>

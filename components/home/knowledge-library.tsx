@@ -7,7 +7,6 @@ import { format } from 'date-fns';
 import NextLink from 'next/link';
 import { Catalog } from '../../types/catalog';
 import { useWeb3 } from '../../hooks/use-web3';
-// import { LoadingButton } from '@mui/lab';
 import { DEFAULT_CHAIN_ID, IPFS_GATEWAY_URL } from '../../config';
 import toast from 'react-hot-toast';
 import HighlightCard from '../widgets/highlight-card';
@@ -24,7 +23,6 @@ export const MailioKnowledgeLibrary: FC = () => {
 
     const [openCatalogId, setOpenCatalogId] = useState<string>('');
 
-    // const [dialogState, setDialogState] = useState<{ open: boolean, catalog: Catalog | null, wallet: string }>({ open: false, catalog: null, wallet: '' });
 
     const handleClaimClick = async (catalog: Catalog) => {
         setIsClaiming(true);
@@ -106,7 +104,6 @@ export const MailioKnowledgeLibrary: FC = () => {
                                                     Out of stock
                                                 </Typography>
                                             )}
-                                            <LinearProgress variant="determinate" value={(catalog.nftTokensUsed ? catalog.nftTokensUsed : 0) / 100 * 100} />
                                         </Box>
                                         <Grid
                                             container
@@ -127,15 +124,15 @@ export const MailioKnowledgeLibrary: FC = () => {
                                                     <a
                                                         target="_blank"
                                                         style={{
-                                                            textDecoration: 'underline'
+                                                            textDecoration: 'none'
                                                         }}
                                                     >
-                                                        <Typography
-                                                            variant='subtitle1'
-                                                            color='textSecondary'
+                                                        <Button
+                                                            variant="outlined"
+                                                            color="secondary"
                                                         >
                                                             View content
-                                                        </Typography>
+                                                        </Button>
                                                     </a>
                                                 </NextLink>
                                             </Grid>

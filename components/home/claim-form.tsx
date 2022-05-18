@@ -200,7 +200,7 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
                                                     sx={{ mt: 2 }}
                                                     variant="h4"
                                                 >
-                                                    12
+                                                    {catalog?.nftTokensUsed}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
@@ -234,7 +234,7 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
                                                     sx={{ mt: 2 }}
                                                     variant="h4"
                                                 >
-                                                    88
+                                                    {100 - (catalog ? catalog.nftTokensUsed : 0)}
                                                 </Typography>
                                             </CardContent>
                                         </Card>

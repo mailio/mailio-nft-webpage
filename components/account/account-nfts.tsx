@@ -34,6 +34,11 @@ export const AccountNfts: FC = () => {
     return (
         <>
             <Box>
+                {claimStore.error && (
+                    <Typography variant="subtitle2" color="error">
+                        {claimStore.error.message}
+                    </Typography>
+                )}
                 <Grid
                     container
                     spacing={2}

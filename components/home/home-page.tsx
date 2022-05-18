@@ -1,26 +1,10 @@
 import { FC } from 'react';
 import { Box, Container, Divider, Grid, Typography, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { SpeedBig } from '../../icons/speed-big';
-import { BlockBig } from '../../icons/block-big';
-import { User } from '../../icons/user';
-import { UserBig } from '../../icons/user-big';
-import { Trash } from '../../icons/trash';
-import { Storage } from '../../icons/storage';
-import { Show } from '../../icons/show';
-import { Sent } from '../../icons/sent';
-import { Refresh } from '../../icons/refresh';
-import { MobileScreenLock } from '../../icons/mobile-screen-lock';
-import { MaximizeWindow } from '../../icons/maximize';
-import { UnreadEmail } from '../../icons/unread-email';
-import { ReadEmail } from '../../icons/read-email';
-import { Inbox } from '../../icons/inbox';
-import { Drafts } from '../../icons/drafts';
-import Link from 'next/link';
-import { CardsExample } from '../widgets/cards';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { HowItWorks } from './how-it-works';
+import { styled } from '@mui/system';
 
 export const HomePage: FC = (props) => {
     const theme = useTheme();
@@ -145,9 +129,10 @@ export const HomePage: FC = (props) => {
                                     sx={{
                                         borderRadius: '5px',
                                         overflow: 'hidden',
+                                        display: 'block !important',
                                     }}
                                 >
-                                    <Image src="/images/mailio-knowhow.jpg" width={1254} height={836} alt="handshake" />
+                                    <Image src="/images/mailio-knowhow.jpg" width={1254} height={836} layout="responsive" alt="handshake" />
                                 </Box>
                             </Grid>
                         </Grid>
@@ -198,7 +183,7 @@ export const HomePage: FC = (props) => {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                    <Image src="/images/mailio-handling-spam.jpg" width={1254} height={836} alt="handshake" />
+                                    <Image src="/images/mailio-handling-spam.jpg" width={1254} height={836} layout="responsive" alt="handshake" />
                                 </Box>
                             </Grid>
                             <Grid
@@ -254,7 +239,9 @@ export const HomePage: FC = (props) => {
                         flexDirection: 'column'
                     }}
                 >
-                    <Box>
+                    <Box
+                        id="howitworks"
+                    >
                         <Typography
                             align="center"
                             sx={{ pb: 6 }}

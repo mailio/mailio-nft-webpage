@@ -15,6 +15,16 @@ const API = axios.create({
     }
 });
 
+export interface ApiError {
+    message: string;
+    status: number;
+}
+
+export function isApiError(object: unknown): object is ApiError {
+    return Object.prototype.hasOwnProperty.call(object, "message")
+        && Object.prototype.hasOwnProperty.call(object, "status");
+}
+
 const requestHandler = (request: AxiosRequestConfig) => {
     const jwtToken = localStorage.getItem(AUTH_TOKEN);
     if (!request.headers) {

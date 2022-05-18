@@ -140,7 +140,7 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                             }}
                         >
                             <NextLink
-                                href="#whatisthis"
+                                href="/#whatisthis"
                                 passHref
                             >
                                 <Link
@@ -152,7 +152,7 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                 </Link>
                             </NextLink>
                             <NextLink
-                                href="#why"
+                                href="/#why"
                                 passHref
                             >
                                 <Link
@@ -165,7 +165,7 @@ export const MainNavbar: FC<MainNavbarProps> = (props) => {
                                 </Link>
                             </NextLink>
                             <NextLink
-                                href="#howitworks"
+                                href="/#howitworks"
                                 passHref
                             >
                                 <Link

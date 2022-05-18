@@ -1,6 +1,6 @@
 import { Catalog } from "../types/catalog";
 import { Claim, ClaimPreview } from "../types/claim";
-import API from "./api";
+import API, { ApiError } from "./api";
 
 class NftServerApi {
 
@@ -117,9 +117,15 @@ class NftServerApi {
                 resolve(response.data);
             } catch (err: any) {
                 if (err.response && err.response.data) {
-                    reject(new Error(err.response.data['message']));
+                    // api error
+                    const ai: ApiError = {
+                        status: Number(err.response.status),
+                        message: String(err.response.data['message']),
+                    }
+                    reject(ai);
                     return;
                 }
+                // system error
                 console.error('[API]: ', err);
                 reject(new Error("failed to list nfts"));
             }
