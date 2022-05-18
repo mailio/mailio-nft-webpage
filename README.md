@@ -70,4 +70,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 This is a parallel project to `eth-salt-lake` repository `web3-starter-kit`. 
 
-[Full documentation of the web3-starter-kit framework can be found here](https://github.com/eth-salt-lake/web3-starter-kit)
+[Reusable GitHub template of the web3-starter-kit framework can be found here](https://github.com/eth-salt-lake/web3-starter-kit)
+
+[Article with a detailed explanation of the framework](https://igor.technology/building-web3-frontend-for-your-dapp/)
