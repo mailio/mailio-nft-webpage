@@ -66,7 +66,7 @@ const footerSections = [
             },
             {
                 title: 'Blog',
-                href: 'https://igor.technology/tag/blockchain/'
+                href: 'https://igor.technology/tag/mailio/'
             },
             {
                 title: 'GitHub',
@@ -119,15 +119,20 @@ export const Footer: FC = (props) => {
                                     sm={1}
                                     md={1}
                                 >
-                                    <IconButton
-                                        sx={{
-                                            color: 'white',
-                                        }}
+                                    <NextLink
+                                        href="https://github.com/mailio"
+                                        passHref
                                     >
-                                        <GitHubIcon
-                                            fontSize="medium"
-                                        />
-                                    </IconButton>
+                                        <IconButton
+                                            sx={{
+                                                color: 'white',
+                                            }}
+                                        >
+                                            <GitHubIcon
+                                                fontSize="medium"
+                                            />
+                                        </IconButton>
+                                    </NextLink>
                                 </Grid>
                                 <Grid
                                     item
@@ -135,7 +140,7 @@ export const Footer: FC = (props) => {
                                     md={1}
                                 >
                                     <NextLink
-                                        href="https://twitter.com/mailio"
+                                        href="https://discord.gg/uzVbJA46E3"
                                         passHref
                                     >
                                         <IconButton
