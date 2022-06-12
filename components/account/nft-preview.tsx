@@ -46,30 +46,50 @@ export const NftPreview: FC<NftPreviewProps> = (props) => {
 
 
     return (
+        <Box
+         pt={20}
+        >
         <Card
             elevation={12}
             sx={{
+                mt: 2,
                 height: '100%',
                 display: 'flex',
+                overflow: 'visible',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
             }}
         >
             {metadata && metadata.image && (
-                <CardMedia
-                    component="img"
-                    image={metadata.image}
-                />
+                <div
+                  style={{
+                      position: 'relative',
+                  }}
+                >
+                    <img
+                        style={{
+                            position: 'absolute',
+                            width: '300px',
+                            left: '50%',
+                            transform: 'translate(-50%, -0%)',
+                            top: '-200px',   
+                        }} 
+                        src="/images/mailio_owl_image.png" 
+                        alt="nft" />
+                </div>
             )}
             <CardContent
                 sx={{
                     alignContent: 'top',
                     height: '100%',
+                    minHeight: '400px',
                 }}
             >
                 <Box
                     sx={{
                         pb: 2,
+                        textAlign: 'center',
+                        pt: '100px',
                     }}
                 >
                     <Typography
@@ -184,5 +204,6 @@ export const NftPreview: FC<NftPreviewProps> = (props) => {
                 </Grid>
             </Box>
         </Card >
+        </Box>
     );
 }
