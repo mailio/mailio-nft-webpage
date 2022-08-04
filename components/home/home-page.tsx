@@ -4,7 +4,6 @@ import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { HowItWorks } from './how-it-works';
-import { styled } from '@mui/system';
 
 export const HomePage: FC = (props) => {
     const theme = useTheme();
