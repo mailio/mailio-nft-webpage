@@ -3,7 +3,8 @@ import { AddCircleOutline, Delete, EventAvailable, Store } from "@mui/icons-mate
 import { LoadingButton } from "@mui/lab";
 import { Box, Card, CardContent, Grid, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { bridgeApi } from "../../api/bridge-api";
@@ -24,6 +25,7 @@ interface ClaimInput extends Claim { }
 export const ClaimForm: FC<ClaimFormProps> = (props) => {
     const { catalog, ...other } = props;
     const router = useRouter();
+    const { executeRecaptcha } = useGoogleReCaptcha();
 
     const { wallet, provider } = useWeb3();
     const [claim, setClaim] = useState<Claim>();
@@ -36,8 +38,25 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
         control
     })
 
+     // Create an event handler so you can call the verification on button click event or form submit
+    const handleReCaptchaVerify = useCallback(async () => {
+        if (!executeRecaptcha) {
+        console.log('Execute recaptcha not yet available');
+        return;
+        }
+
+        const token = await executeRecaptcha('nft_claim_form');
+        return token;
+    }, [executeRecaptcha]);
+
     const onSubmit = async (data: ClaimInput) => {
         // create eip-712 signature first then submit the form
+        const recapthaToken = await handleReCaptchaVerify();
+        if (!recapthaToken) {
+            toast.error("Please verify that you're not a robot");
+            return;
+        }
+
         if (!wallet?.address || !catalog || !provider) {
             toast.error('Please connect your wallet first');
             router.push('/library');
@@ -56,6 +75,7 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
                 walletAddress: wallet?.address,
                 mailioAddress: data.mailioAddress,
                 keywords: data.keywords,
+                recaptcha_token: recapthaToken,
                 signature: signature,
             } as Claim;
 

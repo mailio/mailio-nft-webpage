@@ -24,6 +24,7 @@ import { AuthConsumer, AuthProvider } from '../contexts/auth-context';
 import { LoadingMailio } from '../components/loading-mailio';
 import ErrorBoundary from '../components/widgets/error-boundary';
 import ClientError from '../components/widgets/client-error';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 type MyAppProps = AppProps & {
   Component: NextPage;
@@ -57,6 +58,7 @@ const MyApp: FC<MyAppProps> = (props) => {
       </Head>
       <ReduxProvider store={store}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <GoogleReCaptchaProvider reCaptchaKey='6LfZ3jwhAAAAAJcCIdVw0BC7Q7TUMoMH77t0YLir'>
           <AuthProvider>
             <Web3Provider>
               <SettingsProvider>
@@ -85,6 +87,7 @@ const MyApp: FC<MyAppProps> = (props) => {
               </SettingsProvider>
             </Web3Provider>
           </AuthProvider>
+          </GoogleReCaptchaProvider>
         </LocalizationProvider>
       </ReduxProvider>
     </CacheProvider>
