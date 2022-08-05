@@ -4,7 +4,8 @@ export interface ClaimKeyword {
 
 export interface Claim {
     walletAddress: string,
-    recaptcha_token?: string,
+    recaptchaToken?: string,
+    visitorId?: string,
     mailioAddress?: string,
     signature: string,
     catalogId: string,

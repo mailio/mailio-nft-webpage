@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { useVisitorData } from "@fingerprintjs/fingerprintjs-pro-react";
 import { AddCircleOutline, Delete, EventAvailable, Store } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Box, Card, CardContent, Grid, IconButton, Stack, TextField, Typography } from "@mui/material";
@@ -26,6 +27,7 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
     const { catalog, ...other } = props;
     const router = useRouter();
     const { executeRecaptcha } = useGoogleReCaptcha();
+    const { getData: getVisitorData } = useVisitorData();
 
     const { wallet, provider } = useWeb3();
     const [claim, setClaim] = useState<Claim>();
@@ -56,6 +58,13 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
             toast.error("Please verify that you're not a robot");
             return;
         }
+        
+        const visitorData = await getVisitorData();
+        if (visitorData && visitorData.confidence && visitorData.confidence.score < 0.5) {
+            toast.error("Please verify that you're not a robot. We're sorry for the inconvenience.");
+            return;
+        }
+        console.log("got visitor data: ", visitorData, visitorData?.visitorId);
 
         if (!wallet?.address || !catalog || !provider) {
             toast.error('Please connect your wallet first');
@@ -72,12 +81,15 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
             ]);
             const clm: Claim = {
                 catalogId: catalog.id,
+                visitorId: visitorData?.visitorId,
                 walletAddress: wallet?.address,
                 mailioAddress: data.mailioAddress,
                 keywords: data.keywords,
-                recaptcha_token: recapthaToken,
+                recaptchaToken: recapthaToken,
                 signature: signature,
             } as Claim;
+
+            console.log("here is the claim: ", clm);
 
             const successClaim = await nftServerApi.claim(clm);
             console.log('the success claim: ', successClaim);
@@ -148,11 +160,13 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
                                                 id={`Keywords[${i}]word`}
                                                 {...register(`keywords.${i}.word`, { required: true })}
                                             />
-                                            <IconButton
-                                                onClick={() => remove(i)}
-                                            >
-                                                <Delete fontSize="medium" />
-                                            </IconButton>
+                                            {i > 0 && (
+                                                <IconButton
+                                                    onClick={() => remove(i)}
+                                                >
+                                                    <Delete fontSize="medium" />
+                                                </IconButton>
+                                            )}
                                             {i === fields.length - 1 && (
                                                 <IconButton
                                                     onClick={addKeyword}
