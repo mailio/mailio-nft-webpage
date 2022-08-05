@@ -64,7 +64,6 @@ export const ClaimForm: FC<ClaimFormProps> = (props) => {
             toast.error("Please verify that you're not a robot. We're sorry for the inconvenience.");
             return;
         }
-        console.log("got visitor data: ", visitorData, visitorData?.visitorId);
 
         if (!wallet?.address || !catalog || !provider) {
             toast.error('Please connect your wallet first');
