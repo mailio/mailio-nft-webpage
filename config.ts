@@ -9,6 +9,7 @@ export const DEFAULT_APP_THEME: 'light' | 'dark' = process.env.NEXT_PUBLIC_DEFAU
 export const NFT_SERVER_URL = process.env.NEXT_PUBLIC_NFT_SERVER_URL;
 export const IPFS_GATEWAY_URL = process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL;
 export const INFURA_ID = process.env.NEXT_PUBLIC_INFURA_ID;
+export const FINGERPRINT_ID = process.env.NEXT_PUBLIC_FINGERPRINT_ID;
 
 
 // list of providers for web3 modal
